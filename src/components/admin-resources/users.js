@@ -33,8 +33,8 @@ const UserList = (props) => {
         <TextField label="Прізвище" source="lastName"/>
         <EmailField label="email" source="username"/>
         <TextField label="Тип" source="role"/>
-        <DateField label="Створений" source="created_at"/>
-        <DateField label="Оновлений" source="updated_at"/>
+        <DateField label="Створений" source="createdAt"/>
+        <DateField label="Оновлений" source="updatedAt"/>
         <EditButton label="Редагувати"/>
       </Datagrid>
     </List>
