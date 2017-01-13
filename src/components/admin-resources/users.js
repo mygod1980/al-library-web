@@ -4,14 +4,18 @@
 import _ from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
+import {CardActions} from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
 import {Edit, EditButton, Filter, Create, SimpleForm} from 'admin-on-rest/lib/mui';
 import {TextInput, DisabledInput, SelectInput} from 'admin-on-rest/lib/mui/input';
 import {EmailField, TextField} from 'admin-on-rest/lib/mui/field';
 import {Datagrid, List} from 'admin-on-rest/lib/mui/list';
 import DateField from '../ui/fields/date-field';
+import CreateButton from '../ui/buttons/create-button';
 import {config} from '../../config';
 const rolesChoices = [];
- _.forOwn(config.roles, (role, key) => {
+_.forOwn(config.roles, (role, key) => {
   return rolesChoices.push({id: role, name: key});
 });
 
@@ -21,12 +25,22 @@ const UserFilter = (props) => {
       <TextInput label="Розмір сторінки" type="number" source="perPage" alwaysOn name="perPage"/>
       <TextInput label="Пошук" source="q" alwaysOn name="q"/>
     </Filter>
-  )};
+  )
+};
+
+
+const UserActions = ({resource, filter, displayedFilters, filterValues, basePath, showFilter, refresh}) => (
+  <CardActions style={{float: 'right', zIndex: 99999}}>
+    {filter && React.cloneElement(filter, {resource, showFilter, displayedFilters, filterValues, context: 'button'}) }
+    <CreateButton basePath={basePath}/>
+    <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
+  </CardActions>
+);
 
 const UserList = (props) => {
   return (<div>
     <List title="Користувачі" {...props}
-          filter={<UserFilter/>}>
+          filter={<UserFilter/>} actions={<UserActions/>}>
       <Datagrid selectable={false}>
         <TextField label="id" source="id"/>
         <TextField label="Ім'я" source="firstName"/>
@@ -71,7 +85,7 @@ const UserCreateForm = (props) => {
     }
 
     if (values.password !== values.confirmPassword) {
-      errors.confirmPassword =  ['Паролі не збігаються'];
+      errors.confirmPassword = ['Паролі не збігаються'];
     }
 
     return errors;
@@ -79,7 +93,7 @@ const UserCreateForm = (props) => {
 
   return (
     <Create title='Створення' {...props} hasDelete={!props.isMe}>
-      <SimpleForm defaultValue={props.defaultValue}  validation={validator}>
+      <SimpleForm defaultValue={props.defaultValue} validation={validator}>
         <TextInput label="Ім'я" source="firstName"/>
         <TextInput label="Прізвище" source="lastName"/>
         <TextInput label="Email" type='email' source="username"/>

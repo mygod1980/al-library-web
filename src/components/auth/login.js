@@ -10,7 +10,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import  '../../css/login.css';
 import auth from '../../util/auth';
 import {config} from '../../config';
-import {setLoadingState, notify, logout} from '../../reducers/wrapper/actions';
+import {setLoadingState, notify} from '../../reducers/wrapper/actions';
 
 class Login extends React.Component {
   constructor() {
