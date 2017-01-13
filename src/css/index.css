@@ -80,7 +80,7 @@ a {
   padding: 0 !important;
 }
 
-table tr {
+table tr, table td {
   vertical-align: middle;
 }
 

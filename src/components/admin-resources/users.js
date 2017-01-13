@@ -7,12 +7,15 @@ import {connect} from 'react-redux';
 import {CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-import {Edit, EditButton, Filter, Create, SimpleForm} from 'admin-on-rest/lib/mui';
+import {Edit, Filter, Create, SimpleForm} from 'admin-on-rest/lib/mui';
 import {TextInput, DisabledInput, SelectInput} from 'admin-on-rest/lib/mui/input';
 import {EmailField, TextField} from 'admin-on-rest/lib/mui/field';
 import {Datagrid, List} from 'admin-on-rest/lib/mui/list';
 import DateField from '../ui/fields/date-field';
 import CreateButton from '../ui/buttons/create-button';
+import EditButton from '../ui/buttons/edit-button';
+import DeleteButton from '../ui/buttons/delete-button';
+import ListButton from '../ui/buttons/list-button';
 import {config} from '../../config';
 const rolesChoices = [];
 _.forOwn(config.roles, (role, key) => {
@@ -55,10 +58,18 @@ const UserList = (props) => {
   </div>)
 };
 
+const UserEditActions = ({ basePath, data, refresh }) => (
+  <CardActions style={{float: 'right', zIndex: 9999}}>
+    <ListButton basePath={basePath} />
+    <DeleteButton basePath={basePath} record={data} />
+    <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />} />
+  </CardActions>
+);
+
 const UserEditForm = (props) => {
   const validator = {required: true};
   return (
-    <Edit title='Редагування' {...props} hasDelete={!props.isMe}>
+    <Edit title='Редагування' {...props} hasDelete={!props.isMe} actions={<UserEditActions/>}>
       <SimpleForm>
         <DisabledInput label="ID" source="id"/>
         <TextInput label="Ім'я" source="firstName" validator={validator}/>

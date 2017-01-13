@@ -6,9 +6,9 @@ import { Link } from 'react-router';
 import FlatButton from 'material-ui/FlatButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
-const CreateButton = ({ basePath = '' }) => <FlatButton
+const CreateButton = ({ basePath = '' , label="Створити"}) => <FlatButton
   primary
-  label="Створити"
+  label={label}
   icon={<ContentAdd />}
   containerElement={<Link to={`${basePath}/create`} />}
   style={{ overflow: 'inherit' }}

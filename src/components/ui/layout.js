@@ -20,7 +20,7 @@ class Layout extends React.Component {
     const title = this.props.children.props.route.title;
     const rightElement = this.props.isLoading ? <CircularProgress color={lightBlue50} size={0.7}/> : dropDown;
     const resources = [
-      {name: 'resources/users', icon: People,  options: {label: 'Коритувачі'}}
+      {name: 'resources/users', icon: People,  options: {label: 'Користувачі'}, list: true}
     ];
     return (
       <MuiThemeProvider>
