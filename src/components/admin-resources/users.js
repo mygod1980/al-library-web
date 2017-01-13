@@ -56,29 +56,50 @@ const UserEditForm = (props) => {
 };
 
 const UserCreateForm = (props) => {
-  const validator = {required: true};
+  const validator = (values) => {
+    const errors = {};
+    const required = ['firstName', 'lastName', 'username', 'password', 'confirmPassword'];
+
+    _.map(required, (value) => {
+      if (!values[value]) {
+        errors[value] = [`Значення ${value} є обов'язковим!`];
+      }
+    });
+
+    if (!values.password) {
+      errors.password = ['Введіть пароль!'];
+    }
+
+    if (values.password !== values.confirmPassword) {
+      errors.confirmPassword =  ['Паролі не збігаються'];
+    }
+
+    return errors;
+  };
+
   return (
     <Create title='Створення' {...props} hasDelete={!props.isMe}>
-      <SimpleForm>
-        <TextInput label="Ім'я" source="firstName" validator={validator}/>
-        <TextInput label="Прізвище" source="lastName" validator={validator}/>
-        <TextInput label="Email" type='email' source="username" validator={validator}/>
-        <SelectInput label="Тип" source="role" validator={validator} choices={rolesChoices}/>
+      <SimpleForm defaultValue={props.defaultValue}  validation={validator}>
+        <TextInput label="Ім'я" source="firstName"/>
+        <TextInput label="Прізвище" source="lastName"/>
+        <TextInput label="Email" type='email' source="username"/>
+        <TextInput label="Пароль" source="password"/>
+        <TextInput label="Підтвердіть пароль" type='confirmPassword' source="confirmPassword"/>
+        <SelectInput label="Тип" source="role" choices={rolesChoices}/>
       </SimpleForm>
     </Create>);
 };
 
 const mapStateToProps = (state, props) => {
-  console.log(state);
   const userToEdit = state.admin.users.data[props.params.id];
   return {
     isMe: state.wrapper.user._id === (userToEdit && userToEdit._id)
   };
 };
 
-const mapCreateStateToProps = (state, props) => {
-  // check for url params here
-  return {defaultValue: {}}
+const mapCreateStateToProps = (state, {location}) => {
+  const defaultValue = JSON.parse(location.query.user || "{}");
+  return {defaultValue};
 };
 
 
