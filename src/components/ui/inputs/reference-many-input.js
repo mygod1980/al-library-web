@@ -38,7 +38,7 @@ class ReferenceManyInput extends React.Component {
   }
 
   static propTypes = {
-    addLabel: PropTypes.bool.isRequired,
+    addField: PropTypes.bool.isRequired,
     label: PropTypes.string.isRequired,
     source: PropTypes.string.isRequired,
     hintProp: PropTypes.string,
@@ -48,7 +48,7 @@ class ReferenceManyInput extends React.Component {
   };
 
   static defaultProps = {
-    addLabel: true,
+    addField: true,
     dataSource: [],
     disabled: false
   };

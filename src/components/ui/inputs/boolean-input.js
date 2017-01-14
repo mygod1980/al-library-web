@@ -27,13 +27,13 @@ const BooleanInput = ({ input, label }) => (
 );
 
 BooleanInput.propTypes = {
-  addLabel: PropTypes.bool.isRequired,
+  addField: PropTypes.bool.isRequired,
   input: PropTypes.object,
   label: PropTypes.string,
 };
 
 BooleanInput.defaultProps = {
-  addLabel: true,
+  addField: true,
 };
 
 export default BooleanInput;
