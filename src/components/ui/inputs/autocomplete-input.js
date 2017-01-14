@@ -25,7 +25,7 @@ class AutoCompleteInput extends React.Component {
   }
 
   static propTypes = {
-    includesLabel: PropTypes.bool.isRequired,
+    addLabel: PropTypes.bool.isRequired,
     input: PropTypes.object,
     label: PropTypes.string,
     dataSourceConfig: PropTypes.object.isRequired,
@@ -33,7 +33,7 @@ class AutoCompleteInput extends React.Component {
   };
 
   static defaultProps = {
-    includesLabel: true,
+    addLabel: true,
     disabled: false
   };
 

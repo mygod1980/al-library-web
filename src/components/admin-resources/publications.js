@@ -39,7 +39,7 @@ const PublicationActions = ({resource, filter, displayedFilters, filterValues, b
 
 const PublicationList = (props) => {
   return (<div>
-    <List title="Праці" {...props}
+    <List title="Книги" {...props}
           filter={<PublicationFilter/>} actions={<PublicationActions/>}>
       <Datagrid selectable={false}>
         <TextField label="id" source="id"/>
@@ -78,12 +78,12 @@ const PublicationEditForm = (props) => {
         <DisabledInput label="ID" source="id"/>
         <TextInput label="Назва" source="title" validator={validator}/>
         <TextInput label="Анотація" source="description"/>
-        <ReferenceManyInput includesLabel
+        <ReferenceManyInput addField
                             label="Автори"
                             source="authors"
                             reference="authors"
                             dataSourceConfig={{text: 'lastName', id: '_id'}}/>
-        <ReferenceManyInput includesLabel
+        <ReferenceManyInput addField
                             label="Authors"
                             source="categories"
                             reference="categories"
@@ -112,13 +112,13 @@ const PublicationCreateForm = (props) => {
       <SimpleForm validation={validator}>
         <TextInput label="Назва" source="title"/>
         <TextInput label="Анотація" source="description"/>
-        <ReferenceManyInput includesLabel
+        <ReferenceManyInput addField
                             label="Автори"
                             source="authors"
                             reference="authors"
                             dataSourceConfig={{text: 'lastName', id: '_id'}}/>
-        <ReferenceManyInput includesLabel
-                            label="Authors"
+        <ReferenceManyInput addField
+                            label="Категорії"
                             source="categories"
                             reference="categories"
                             dataSourceConfig={{text: 'name', id: '_id'}}/>

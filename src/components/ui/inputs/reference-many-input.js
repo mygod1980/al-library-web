@@ -38,7 +38,7 @@ class ReferenceManyInput extends React.Component {
   }
 
   static propTypes = {
-    includesLabel: PropTypes.bool.isRequired,
+    addLabel: PropTypes.bool.isRequired,
     label: PropTypes.string.isRequired,
     source: PropTypes.string.isRequired,
     hintProp: PropTypes.string,
@@ -48,19 +48,19 @@ class ReferenceManyInput extends React.Component {
   };
 
   static defaultProps = {
-    includesLabel: true,
+    addLabel: true,
     dataSource: [],
     disabled: false
   };
 
-  createChip = ({id, text}) => {
+  createChip ({id, text}) {
     return <span id={id}>{text}</span>;
   };
 
   componentWillMount() {
     const {record, dataSourceConfig, source, hintProp} = this.props;
 
-    if (record[source].length === 0 ) {
+    if (record[source].length === 0) {
       return;
     }
     const items = record[source];
@@ -83,7 +83,7 @@ class ReferenceManyInput extends React.Component {
   }
 
 
-  handleRequestDelete = ({props}) => {
+  handleRequestDelete({props}) {
     const {record, source} = this.props;
     const filteredItems = this.state.selected.filter((item) => {
       return item.props.id !== props.id;
@@ -95,7 +95,7 @@ class ReferenceManyInput extends React.Component {
     return this.setState({selected: filteredItems});
   };
 
-  handleUpdateInput = (value) => {
+  handleUpdateInput(value) {
     const {hintProp, dataSourceConfig} = this.props;
     return sendRequest(GET_LIST, this.props.reference, {filter: {q: value}, noCount: true})
       .then(({data}) => {
@@ -121,7 +121,7 @@ class ReferenceManyInput extends React.Component {
       });
   };
 
-  handleRequestAdd = (item) => {
+  handleRequestAdd(item) {
     console.info('Trying hard to add item %s', item);
     if (!item) {
       return;
@@ -158,13 +158,13 @@ class ReferenceManyInput extends React.Component {
     const {label, dataSourceConfig, meta} = this.props;
     return (
       <ChipInput dataSource={this.state.dataSource}
-                 onUpdateInput={this.handleUpdateInput}
+                 onUpdateInput={this.handleUpdateInput.bind(this)}
                  dataSourceConfig={dataSourceConfig}
                  value={this.state.selected}
                  floatingLabelText={label}
-                 onRequestAdd={this.handleRequestAdd}
-                 onNewRequest={this.handleRequestAdd}
-                 onRequestDelete={this.handleRequestDelete}
+                 onRequestAdd={this.handleRequestAdd.bind(this)}
+                 onNewRequest={this.handleRequestAdd.bind(this)}
+                 onRequestDelete={this.handleRequestDelete.bind(this)}
                  errorText={meta.touched && meta.error}
       />
     );
