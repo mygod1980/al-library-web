@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-import {Edit, Filter, Create, SimpleForm} from 'admin-on-rest/lib/mui';
+import {Edit, Filter, Create, SimpleForm, Show, SimpleShowLayout} from 'admin-on-rest/lib/mui';
 import {TextInput, DisabledInput, LongTextInput} from 'admin-on-rest/lib/mui/input';
 import {TextField} from 'admin-on-rest/lib/mui/field';
 import {Datagrid, List} from 'admin-on-rest/lib/mui/list';
@@ -16,6 +16,7 @@ import CreateButton from '../ui/buttons/create-button';
 import EditButton from '../ui/buttons/edit-button';
 import DeleteButton from '../ui/buttons/delete-button';
 import ListButton from '../ui/buttons/list-button';
+import {config} from "../../config";
 
 const CategoryFilter = (props) => {
   return (
@@ -70,6 +71,27 @@ const CategoryEditForm = (props) => {
     </Edit>);
 };
 
+const CategoryShowForm = (props) => {
+  return (
+    <Show title='Редагування' {...props} actions={<CategoryEditActions/>}>
+      <SimpleShowLayout>
+        <TextField label="ID" source="id"/>
+        <TextField label="Назва" source="name"/>
+        <TextField label="Опис" source="description"/>
+      </SimpleShowLayout>
+    </Show>);
+};
+
+const mapShowStateToProps = (state, props) => {
+  const isAdmin = state.wrapper.user.role === config.roles.ADMIN;
+
+  return {
+    hasDelete: isAdmin,
+    hasEdit: isAdmin
+  };
+};
+
+const CategoryShow = connect(mapShowStateToProps)(CategoryShowForm);
 const CategoryCreateForm = (props) => {
   const validator = (values) => {
     const errors = {};
@@ -96,6 +118,6 @@ const CategoryCreateForm = (props) => {
 const CategoryEdit = connect()(CategoryEditForm);
 const CategoryCreate = connect()(CategoryCreateForm);
 
-export {CategoryList, CategoryEdit, CategoryCreate};
+export {CategoryList, CategoryEdit, CategoryCreate, CategoryShow};
 
 

@@ -5,6 +5,7 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
 import CircularProgress from 'material-ui/CircularProgress';
 import People from 'material-ui/svg-icons/social/people';
@@ -15,6 +16,8 @@ import UserDropDown from './header/user-dropdown';
 import Menu from 'admin-on-rest/lib/mui/layout/Menu';
 import {lightBlue50} from 'material-ui/styles/colors';
 import Notification from '../../components/ui/notification';
+import {config} from '../../config';
+import theme from './theme/dark-theme';
 
 class Layout extends React.Component {
   render() {
@@ -24,12 +27,16 @@ class Layout extends React.Component {
     const rightElement = this.props.isLoading ? <CircularProgress color={lightBlue50} size={0.7}/> : dropDown;
     const resources = [
       {name: 'resources/publications', icon: FolderOPen, options: {label: 'Книги'}, list: true},
-      {name: 'resources/users', icon: People, options: {label: 'Користувачі'}, list: true},
       {name: 'resources/authors', icon: Person, options: {label: 'Автори'}, list: true},
       {name: 'resources/categories', icon: Label, options: {label: 'Категорії'}, list: true}
     ];
+
+    if (this.props.isAdmin) {
+      resources.push({name: 'resources/users', icon: People, options: {label: 'Користувачі'}, list: true});
+    }
+
     return (
-      <MuiThemeProvider>
+      <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
         <div className="container" id="app-wrapper">
           <div>
             <AppBar title={title || 'Електронна бібліотека'}
@@ -52,7 +59,8 @@ class Layout extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    isLoading: state.admin.loading > 0 || state.wrapper.isLoading
+    isLoading: state.admin.loading > 0 || state.wrapper.isLoading,
+    isAdmin: state.wrapper.user && state.wrapper.user.role === config.roles.ADMIN
   };
 };
 

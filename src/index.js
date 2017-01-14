@@ -10,9 +10,9 @@ import {reducer as formReducer} from "redux-form";
 import restClient from "./util/rest-client";
 import Layout from "./components/ui/layout";
 import {UserList, UserCreate, UserEdit} from "./components/admin-resources/users";
-import {PublicationList, PublicationCreate, PublicationEdit} from "./components/admin-resources/publications";
-import {AuthorList, AuthorCreate, AuthorEdit} from "./components/admin-resources/authors";
-import {CategoryList, CategoryCreate, CategoryEdit} from "./components/admin-resources/categories";
+import {PublicationList, PublicationCreate, PublicationEdit, PublicationShow} from "./components/admin-resources/publications";
+import {AuthorList, AuthorCreate, AuthorEdit, AuthorShow} from "./components/admin-resources/authors";
+import {CategoryList, CategoryCreate, CategoryEdit, CategoryShow} from "./components/admin-resources/categories";
 import {Delete} from "admin-on-rest/lib/mui";
 import auth from "./util/auth";
 import Login from "./components/auth/login";
@@ -84,6 +84,7 @@ ReactDOM.render((
                      list={PublicationList}
                      create={PublicationCreate}
                      edit={PublicationEdit}
+                     show={PublicationShow}
                      remove={Delete}/>
           <CrudRoute path="users"
                      list={UserList}
@@ -94,11 +95,13 @@ ReactDOM.render((
                      list={AuthorList}
                      create={AuthorCreate}
                      edit={AuthorEdit}
+                     show={AuthorShow}
                      remove={Delete}/>
           <CrudRoute path="categories"
                      list={CategoryList}
                      create={CategoryCreate}
                      edit={CategoryEdit}
+                     show={CategoryShow}
                      remove={Delete}/>
         </Route>
       </Route>

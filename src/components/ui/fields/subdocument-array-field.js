@@ -11,7 +11,7 @@ export default class SubdocumentArrayField extends React.Component {
   };
 
   render() {
-    const {record, source, displaySource, reference} = this.props;
+    const {record, source, displaySource, reference, style = {}} = this.props;
 
     return (
 
@@ -29,8 +29,13 @@ export default class SubdocumentArrayField extends React.Component {
         }
 
         label = label.trim();
-        return (<p key={item._id}><a href={`#/resources/${reference}/${item._id}`}>{label}{isLast ? '' : ','}</a></p>);
+        return (
+          <p key={item._id}>
+            <a style={style} href={`#/resources/${reference}/${item._id}/show`}>
+              {isLast ? label : `${label}, `}
+            </a>
+          </p>);
       })}
-    </div>);
+      </div>);
   }
 }
