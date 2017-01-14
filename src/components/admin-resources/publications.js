@@ -52,6 +52,7 @@ const styles = {
   gridList: {
     display: 'flex',
     minHeight: '350px',
+    minWidth: '550px',
     overflowY: 'auto'
   },
   gridTile: {
