@@ -17,7 +17,7 @@ import EditButton from '../ui/buttons/edit-button';
 import DeleteButton from '../ui/buttons/delete-button';
 import ListButton from '../ui/buttons/list-button';
 
-const AuthorFilter = (props) => {
+const CategoryFilter = (props) => {
   return (
     <Filter {...props}>
       <TextInput label="Розмір сторінки" type="number" source="perPage" alwaysOn name="perPage"/>
@@ -26,8 +26,7 @@ const AuthorFilter = (props) => {
   )
 };
 
-
-const AuthorActions = ({resource, filter, displayedFilters, filterValues, basePath, showFilter, refresh}) => (
+const CategoryActions = ({resource, filter, displayedFilters, filterValues, basePath, showFilter, refresh}) => (
   <CardActions style={{float: 'right', zIndex: 99999}}>
     {filter && React.cloneElement(filter, {resource, showFilter, displayedFilters, filterValues, context: 'button'}) }
     <CreateButton basePath={basePath}/>
@@ -35,50 +34,46 @@ const AuthorActions = ({resource, filter, displayedFilters, filterValues, basePa
   </CardActions>
 );
 
-const AuthorList = (props) => {
+const CategoryList = (props) => {
   return (<div>
-    <List title="Автори" {...props}
-          filter={<AuthorFilter/>} actions={<AuthorActions/>}>
+    <List title="Категорії" {...props}
+          filter={<CategoryFilter/>} actions={<CategoryActions/>}>
       <Datagrid selectable={false}>
         <TextField label="id" source="id"/>
-        <TextField label="Ім'я" source="firstName"/>
-        <TextField label="По батькові" source="secondName"/>
-        <TextField label="Прізвище" source="lastName"/>
+        <TextField label="Назва" source="name"/>
         <TextField label="Опис" source="description"/>
-        <DateField label="Створений" source="createdAt"/>
-        <DateField label="Оновлений" source="updatedAt"/>
+        <DateField label="Створена" source="createdAt"/>
+        <DateField label="Оновлена" source="updatedAt"/>
         <EditButton label="Редагування"/>
       </Datagrid>
     </List>
   </div>)
 };
 
-const AuthorEditActions = ({ basePath, data, refresh }) => (
+const CategoryEditActions = ({basePath, data, refresh}) => (
   <CardActions style={{float: 'right', zIndex: 9999}}>
-    <ListButton basePath={basePath} />
-    <DeleteButton basePath={basePath} record={data} />
-    <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />} />
+    <ListButton basePath={basePath}/>
+    <DeleteButton basePath={basePath} record={data}/>
+    <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
   </CardActions>
 );
 
-const AuthorEditForm = (props) => {
+const CategoryEditForm = (props) => {
   const validator = {required: true};
   return (
-    <Edit title='Редагування' {...props} actions={<AuthorEditActions/>}>
+    <Edit title='Редагування' {...props} actions={<CategoryEditActions/>}>
       <SimpleForm>
         <DisabledInput label="ID" source="id"/>
-        <TextInput label="Ім'я" source="firstName" validation={validator}/>
-        <TextInput label="По батькові" source="secondName" validation={validator}/>
-        <TextInput label="Прізвище" source="lastName" validation={validator}/>
+        <TextInput label="Назва" source="name" validation={validator}/>
         <LongTextInput label="Опис" source="description"/>
       </SimpleForm>
     </Edit>);
 };
 
-const AuthorCreateForm = (props) => {
+const CategoryCreateForm = (props) => {
   const validator = (values) => {
     const errors = {};
-    const required = ['firstName', 'lastName'];
+    const required = ['name'];
 
     _.map(required, (value) => {
       if (!values[value]) {
@@ -92,17 +87,15 @@ const AuthorCreateForm = (props) => {
   return (
     <Create title='Створення' {...props} hasDelete={!props.isMe}>
       <SimpleForm defaultValue={props.defaultValue} validation={validator}>
-        <TextInput label="Ім'я" source="firstName"/>
-        <TextInput label="По батькові" source="secondName"/>
-        <TextInput label="Прізвище" source="lastName"/>
+        <TextInput label="Назва" source="name"/>
         <LongTextInput label="Опис" source="description"/>
       </SimpleForm>
     </Create>);
 };
 
-const AuthorEdit = connect()(AuthorEditForm);
-const AuthorCreate = connect()(AuthorCreateForm);
+const CategoryEdit = connect()(CategoryEditForm);
+const CategoryCreate = connect()(CategoryCreateForm);
 
-export {AuthorList, AuthorEdit, AuthorCreate};
+export {CategoryList, CategoryEdit, CategoryCreate};
 
 

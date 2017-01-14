@@ -8,7 +8,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import CircularProgress from 'material-ui/CircularProgress';
 import People from 'material-ui/svg-icons/social/people';
-import PeopleOutline from 'material-ui/svg-icons/social/people-outline';
+import Person from 'material-ui/svg-icons/social/person';
+import Label from 'material-ui/svg-icons/action/label';
 import UserDropDown from './header/user-dropdown';
 import Menu from 'admin-on-rest/lib/mui/layout/Menu';
 import {lightBlue50} from 'material-ui/styles/colors';
@@ -22,7 +23,8 @@ class Layout extends React.Component {
     const rightElement = this.props.isLoading ? <CircularProgress color={lightBlue50} size={0.7}/> : dropDown;
     const resources = [
       {name: 'resources/users', icon: People,  options: {label: 'Користувачі'}, list: true},
-      {name: 'resources/authors', icon: PeopleOutline,  options: {label: 'Автори'}, list: true}
+      {name: 'resources/authors', icon: Person,  options: {label: 'Автори'}, list: true},
+      {name: 'resources/categories', icon: Label,  options: {label: 'Категорії'}, list: true}
     ];
     return (
       <MuiThemeProvider>

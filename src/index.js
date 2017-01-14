@@ -11,6 +11,7 @@ import restClient from "./util/rest-client";
 import Layout from "./components/ui/layout";
 import {UserList, UserCreate, UserEdit} from "./components/admin-resources/users";
 import {AuthorList, AuthorCreate, AuthorEdit} from "./components/admin-resources/authors";
+import {CategoryList, CategoryCreate, CategoryEdit} from "./components/admin-resources/categories";
 import {Delete} from "admin-on-rest/lib/mui";
 import auth from "./util/auth";
 import Login from "./components/auth/login";
@@ -23,7 +24,8 @@ import "./css/index.css";
 const reducer = combineReducers({
   admin: adminReducer([
     {name: 'users'},
-    {name: 'authors'}
+    {name: 'authors'},
+    {name: 'categories'}
   ]),
   form: formReducer,
   routing: routerReducer,
@@ -85,6 +87,11 @@ ReactDOM.render((
                      list={AuthorList}
                      create={AuthorCreate}
                      edit={AuthorEdit}
+                     remove={Delete}/>
+          <CrudRoute path="categories"
+                     list={CategoryList}
+                     create={CategoryCreate}
+                     edit={CategoryEdit}
                      remove={Delete}/>
         </Route>
       </Route>
