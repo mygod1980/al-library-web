@@ -2,11 +2,9 @@
   "name": "al-library-admin",
   "version": "0.1.0",
   "private": true,
-  "devDependencies": {
-    "custom-react-scripts": "0.0.21"
-  },
   "dependencies": {
     "admin-on-rest": "^0.7.0",
+    "custom-react-scripts": "0.0.21"
     "js-cookie": "^2.1.3",
     "lodash": "^4.17.4",
     "material-design-icons": "^3.0.1",
