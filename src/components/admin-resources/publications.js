@@ -57,7 +57,7 @@ const styles = {
     overflowY: 'auto'
   },
   gridTile: {
-    margin: '10px',
+    margin: '0 10px 10px 0',
     maxWidth: '300px',
     minHeight: '300px'
   }
