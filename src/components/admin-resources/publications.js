@@ -45,20 +45,10 @@ const PublicationActions = ({resource, filter, displayedFilters, filterValues, b
 );
 
 const styles = {
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around'
-  },
-  gridList: {
-    display: 'flex',
-    width: '100%',
-    minHeight: '350px',
-    overflowY: 'auto'
-  },
   gridTile: {
-    margin: '0 10px 10px 0',
+    margin: '0 10px 10px 10px',
     maxWidth: '300px',
+    display: 'inline-block',
     minHeight: '300px'
   }
 };
@@ -66,10 +56,9 @@ const styles = {
 const PublicationGrid = ({ids, data, basePath, isAdmin}) => {
   const icon = isAdmin ? <ContentCreate color="white"/> : <ImageEye color="white"/>;
   return (
-    <div style={styles.root}>
+    <div>
       <GridList
         cellHeight={180}
-        style={styles.gridList}
       >
         {ids.map((id) => (
           <GridTile
