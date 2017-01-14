@@ -48,7 +48,7 @@ const AuthorList = (props) => {
         <TextField label="Опис" source="description"/>
         <DateField label="Створений" source="createdAt"/>
         <DateField label="Оновлений" source="updatedAt"/>
-        <EditButton label="Редагування"/>
+        <EditButton label="Редагувати"/>
       </Datagrid>
     </List>
   </div>)

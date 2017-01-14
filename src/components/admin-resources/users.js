@@ -52,7 +52,7 @@ const UserList = (props) => {
         <TextField label="Тип" source="role"/>
         <DateField label="Створений" source="createdAt"/>
         <DateField label="Оновлений" source="updatedAt"/>
-        <EditButton label="Редагування"/>
+        <EditButton label="Редагувати"/>
       </Datagrid>
     </List>
   </div>)
