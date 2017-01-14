@@ -10,6 +10,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import People from 'material-ui/svg-icons/social/people';
 import Person from 'material-ui/svg-icons/social/person';
 import Label from 'material-ui/svg-icons/action/label';
+import FolderOPen from 'material-ui/svg-icons/file/folder-open';
 import UserDropDown from './header/user-dropdown';
 import Menu from 'admin-on-rest/lib/mui/layout/Menu';
 import {lightBlue50} from 'material-ui/styles/colors';
@@ -22,9 +23,10 @@ class Layout extends React.Component {
     const title = this.props.children.props.route.title;
     const rightElement = this.props.isLoading ? <CircularProgress color={lightBlue50} size={0.7}/> : dropDown;
     const resources = [
-      {name: 'resources/users', icon: People,  options: {label: 'Користувачі'}, list: true},
-      {name: 'resources/authors', icon: Person,  options: {label: 'Автори'}, list: true},
-      {name: 'resources/categories', icon: Label,  options: {label: 'Категорії'}, list: true}
+      {name: 'resources/publications', icon: FolderOPen, options: {label: 'Книги'}, list: true},
+      {name: 'resources/users', icon: People, options: {label: 'Користувачі'}, list: true},
+      {name: 'resources/authors', icon: Person, options: {label: 'Автори'}, list: true},
+      {name: 'resources/categories', icon: Label, options: {label: 'Категорії'}, list: true}
     ];
     return (
       <MuiThemeProvider>
@@ -35,9 +37,9 @@ class Layout extends React.Component {
                     showMenuIconButton={false}
                     className="app-bar"/>
             <div className={isLogin ? "login" : "body"}
-                 style={isLogin ? {} :{ display: 'flex', flex: '1', backgroundColor: '#edecec' }}>
-              <div style={{ flex: 1 }}>{this.props.children}</div>
-              {isLogin ? null : <Menu resources={resources} />}
+                 style={isLogin ? {} : {display: 'flex', flex: '1', backgroundColor: '#edecec'}}>
+              <div style={{flex: 1}}>{this.props.children}</div>
+              {isLogin ? null : <Menu resources={resources}/>}
             </div>
 
           </div>

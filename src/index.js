@@ -10,6 +10,7 @@ import {reducer as formReducer} from "redux-form";
 import restClient from "./util/rest-client";
 import Layout from "./components/ui/layout";
 import {UserList, UserCreate, UserEdit} from "./components/admin-resources/users";
+import {PublicationList, PublicationCreate, PublicationEdit} from "./components/admin-resources/publications";
 import {AuthorList, AuthorCreate, AuthorEdit} from "./components/admin-resources/authors";
 import {CategoryList, CategoryCreate, CategoryEdit} from "./components/admin-resources/categories";
 import {Delete} from "admin-on-rest/lib/mui";
@@ -25,7 +26,8 @@ const reducer = combineReducers({
   admin: adminReducer([
     {name: 'users'},
     {name: 'authors'},
-    {name: 'categories'}
+    {name: 'categories'},
+    {name: 'publications'}
   ]),
   form: formReducer,
   routing: routerReducer,
@@ -78,6 +80,11 @@ ReactDOM.render((
         <Route path="login" title={config.appTitle} component={Login}/>
         <Route path="logout" title={config.appTitle} component={Logout} onEnter={logout}/>
         <Route path="resources" onEnter={checkAuth}>
+          <CrudRoute path="publications"
+                     list={PublicationList}
+                     create={PublicationCreate}
+                     edit={PublicationEdit}
+                     remove={Delete}/>
           <CrudRoute path="users"
                      list={UserList}
                      create={UserCreate}
