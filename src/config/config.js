@@ -2,8 +2,6 @@
  * Created by eugenia on 22.09.16.
  */
 
-console.log(process.env);
-
 export const config = {
   appTitle: 'Електронна бібіліотека',
   errors: {
