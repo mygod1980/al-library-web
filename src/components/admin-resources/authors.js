@@ -70,7 +70,7 @@ const AuthorEditForm = (props) => {
         <TextInput label="Ім'я" source="firstName" validation={validator}/>
         <TextInput label="По батькові" source="secondName" validation={validator}/>
         <TextInput label="Прізвище" source="lastName" validation={validator}/>
-        <LongTextInput label="Опис" source="description" validation={validator}/>
+        <LongTextInput label="Опис" source="description"/>
       </SimpleForm>
     </Edit>);
 };
