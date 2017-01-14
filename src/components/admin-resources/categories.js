@@ -44,7 +44,7 @@ const CategoryList = (props) => {
         <TextField label="Опис" source="description"/>
         <DateField label="Створена" source="createdAt"/>
         <DateField label="Оновлена" source="updatedAt"/>
-        <EditButton label="Редагування"/>
+        <EditButton label="Редагувати"/>
       </Datagrid>
     </List>
   </div>)
