@@ -10,6 +10,7 @@ import {reducer as formReducer} from "redux-form";
 import restClient from "./util/rest-client";
 import Layout from "./components/ui/layout";
 import {UserList, UserCreate, UserEdit} from "./components/admin-resources/users";
+import {AuthorList, AuthorCreate, AuthorEdit} from "./components/admin-resources/authors";
 import {Delete} from "admin-on-rest/lib/mui";
 import auth from "./util/auth";
 import Login from "./components/auth/login";
@@ -21,7 +22,8 @@ import "./css/index.css";
 
 const reducer = combineReducers({
   admin: adminReducer([
-    {name: 'users'}
+    {name: 'users'},
+    {name: 'authors'}
   ]),
   form: formReducer,
   routing: routerReducer,
@@ -78,6 +80,11 @@ ReactDOM.render((
                      list={UserList}
                      create={UserCreate}
                      edit={UserEdit}
+                     remove={Delete}/>
+          <CrudRoute path="authors"
+                     list={AuthorList}
+                     create={AuthorCreate}
+                     edit={AuthorEdit}
                      remove={Delete}/>
         </Route>
       </Route>
