@@ -36,13 +36,29 @@ const PublicationFilter = (props) => {
   )
 };
 
-const PublicationActions = ({resource, filter, displayedFilters, filterValues, basePath, showFilter, refresh}) => (
-  <CardActions style={{float: 'right', zIndex: 99999}}>
-    {filter && React.cloneElement(filter, {resource, showFilter, displayedFilters, filterValues, context: 'button'}) }
-    <CreateButton basePath={basePath}/>
-    <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
-  </CardActions>
-);
+const mapStateToProps = (state) => {
+  const {user} = state.wrapper;
+  return {user, isAdmin: user && user.role === config.roles.ADMIN};
+};
+
+const PublicationActions = connect(mapStateToProps)(({
+  resource,
+  filter,
+  displayedFilters,
+  filterValues,
+  basePath,
+  showFilter,
+  refresh,
+  isAdmin
+}) => {
+  return (
+    <CardActions style={{float: 'right', zIndex: 99999}}>
+      {filter && React.cloneElement(filter, {resource, showFilter, displayedFilters, filterValues, context: 'button'}) }
+      {isAdmin && <CreateButton basePath={basePath}/>}
+      <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
+    </CardActions>
+  )
+});
 
 const styles = {
   root: {
@@ -96,10 +112,6 @@ const PublicationGrid = ({ids, data, basePath, isAdmin}) => {
   );
 };
 
-const mapStateToProps = (state, props) => {
-  return {isAdmin: state.wrapper.user && state.wrapper.user.role === config.roles.ADMIN};
-};
-
 const PublicationList = connect(mapStateToProps)((props) => {
   return (<div>
     <List title="Книги" {...props}
@@ -109,11 +121,7 @@ const PublicationList = connect(mapStateToProps)((props) => {
   </div>)
 });
 
-const mapActionsStateToProps = (state, props) => {
-  const {user} = state.wrapper;
-  return {user, isAdmin: user && user.role === config.roles.ADMIN};
-};
-const PublicationEditActions = connect(mapActionsStateToProps)(({basePath, data = {}, refresh, user, isAdmin}) => {
+const PublicationEditActions = connect(mapStateToProps)(({basePath, data = {}, refresh, user, isAdmin}) => {
   const accessToken = Cookies.get('access_token');
   const downloadUrl = data.downloadUrl ? `${data.downloadUrl}?access_token=${encodeURIComponent(accessToken)}` : null;
   const linkTitle = data.downloadUrl ? user ? 'Отримати файл' : 'Авторизуйтесь, щоб отримати файл' : 'Файлу немає';
@@ -128,7 +136,7 @@ const PublicationEditActions = connect(mapActionsStateToProps)(({basePath, data 
 
       {
         isAdmin ?
-        <DeleteButton basePath={basePath} record={data}/> :
+          <DeleteButton basePath={basePath} record={data}/> :
           <span/>
       }
       <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
