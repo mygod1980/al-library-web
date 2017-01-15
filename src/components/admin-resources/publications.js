@@ -147,7 +147,6 @@ const PublicationEditActions = connect(mapStateToProps)(({basePath, data = {}, r
 const PublicationEditForm = (props) => {
   const validator = {required: true};
 
-
   return (
     <Edit title='Редагування' {...props} hasDelete={!props.isMe} actions={<PublicationEditActions/>}>
       <SimpleForm>

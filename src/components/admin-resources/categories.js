@@ -78,7 +78,7 @@ const CategoryEditForm = (props) => {
 
 const CategoryShowForm = (props) => {
   return (
-    <Edit title='Редагування' {...props} actions={<CategoryEditActions/>}>
+    <Edit title='Деталі' {...props} actions={<CategoryEditActions/>}>
       <SimpleShowLayout>
         <TextField label="ID" source="id"/>
         <TextField label="Назва" source="name"/>
