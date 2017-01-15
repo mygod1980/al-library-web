@@ -10,7 +10,10 @@ import {reducer as formReducer} from "redux-form";
 import restClient from "./util/rest-client";
 import Layout from "./components/ui/layout";
 import {UserList, UserCreate, UserEdit} from "./components/admin-resources/users";
-import {AuthorList, AuthorCreate, AuthorEdit} from "./components/admin-resources/authors";
+import {PublicationList, PublicationCreate, PublicationEdit, PublicationShow} from "./components/admin-resources/publications";
+import {AuthorList, AuthorCreate, AuthorEdit, AuthorShow} from "./components/admin-resources/authors";
+import {CategoryList, CategoryCreate, CategoryEdit, CategoryShow} from "./components/admin-resources/categories";
+import {FileUpload} from './components/admin-resources/file-upload';
 import {Delete} from "admin-on-rest/lib/mui";
 import auth from "./util/auth";
 import Login from "./components/auth/login";
@@ -23,7 +26,9 @@ import "./css/index.css";
 const reducer = combineReducers({
   admin: adminReducer([
     {name: 'users'},
-    {name: 'authors'}
+    {name: 'authors'},
+    {name: 'categories'},
+    {name: 'publications'}
   ]),
   form: formReducer,
   routing: routerReducer,
@@ -76,6 +81,12 @@ ReactDOM.render((
         <Route path="login" title={config.appTitle} component={Login}/>
         <Route path="logout" title={config.appTitle} component={Logout} onEnter={logout}/>
         <Route path="resources" onEnter={checkAuth}>
+          <CrudRoute path="publications"
+                     list={PublicationList}
+                     create={PublicationCreate}
+                     edit={PublicationEdit}
+                     show={PublicationShow}
+                     remove={Delete}/>
           <CrudRoute path="users"
                      list={UserList}
                      create={UserCreate}
@@ -85,7 +96,16 @@ ReactDOM.render((
                      list={AuthorList}
                      create={AuthorCreate}
                      edit={AuthorEdit}
+                     show={AuthorShow}
                      remove={Delete}/>
+          <CrudRoute path="categories"
+                     list={CategoryList}
+                     create={CategoryCreate}
+                     edit={CategoryEdit}
+                     show={CategoryShow}
+                     remove={Delete}/>
+          <Route path="publications/:id/upload" component={FileUpload}/>
+          <Route path="upload" component={FileUpload}/>
         </Route>
       </Route>
     </Router>
