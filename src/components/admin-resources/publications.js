@@ -132,7 +132,7 @@ const PublicationEditActions = connect(mapStateToProps)(({basePath, data = {}, r
                   href={downloadUrl}
                   disabled={!downloadUrl}
                   icon={<CloudDownload />}/>
-      <ListButton basePath={basePath}/>
+      <ListButton basePath={basePath} record={data}/>
 
       {
         isAdmin ?

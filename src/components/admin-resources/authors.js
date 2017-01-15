@@ -15,6 +15,7 @@ import DateField from '../ui/fields/date-field';
 import CreateButton from '../ui/buttons/create-button';
 import EditButton from '../ui/buttons/edit-button';
 import DeleteButton from '../ui/buttons/delete-button';
+import ShowButton from '../ui/buttons/show-button';
 import ListButton from '../ui/buttons/list-button';
 import {config} from '../../config';
 
@@ -40,7 +41,7 @@ const AuthorActions = connect(mapStateToProps)(({resource, filter, displayedFilt
   </CardActions>
 ));
 
-const AuthorList = (props) => {
+const AuthorList = connect(mapStateToProps)((props) => {
   return (<div>
     <List title="Автори" {...props}
           filter={<AuthorFilter/>} actions={<AuthorActions/>}>
@@ -52,15 +53,15 @@ const AuthorList = (props) => {
         <TextField label="Опис" source="description"/>
         <DateField label="Створений" source="createdAt"/>
         <DateField label="Оновлений" source="updatedAt"/>
-        <EditButton label="Редагувати"/>
+        {props.isAdmin ? <EditButton label="Редагувати"/> : <ShowButton label="Деталі"/>}
       </Datagrid>
     </List>
   </div>)
-};
+});
 
 const AuthorEditActions = connect(mapStateToProps)(({ basePath, data, refresh, isAdmin }) => (
   <CardActions style={{float: 'right', zIndex: 9999}}>
-    <ListButton basePath={basePath} />
+    <ListButton basePath={basePath} record={data} />
     {isAdmin && <DeleteButton basePath={basePath} record={data} />}
     <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />} />
   </CardActions>

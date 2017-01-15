@@ -16,6 +16,7 @@ import CreateButton from '../ui/buttons/create-button';
 import EditButton from '../ui/buttons/edit-button';
 import DeleteButton from '../ui/buttons/delete-button';
 import ListButton from '../ui/buttons/list-button';
+import ShowButton from '../ui/buttons/show-button';
 import {config} from "../../config";
 
 const CategoryFilter = (props) => {
@@ -32,7 +33,16 @@ const mapStateToProps = (state) => {
   return {user, isAdmin: user && user.role === config.roles.ADMIN};
 };
 
-const CategoryActions = connect(mapStateToProps)(({resource, filter, displayedFilters, filterValues, basePath, showFilter, refresh, isAdmin}) => (
+const CategoryActions = connect(mapStateToProps)(({
+  resource,
+  filter,
+  displayedFilters,
+  filterValues,
+  basePath,
+  showFilter,
+  refresh,
+  isAdmin
+}) => (
   <CardActions style={{float: 'right', zIndex: 99999}}>
     {filter && React.cloneElement(filter, {resource, showFilter, displayedFilters, filterValues, context: 'button'}) }
     {isAdmin && <CreateButton basePath={basePath}/>}
@@ -40,7 +50,7 @@ const CategoryActions = connect(mapStateToProps)(({resource, filter, displayedFi
   </CardActions>
 ));
 
-const CategoryList = (props) => {
+const CategoryList = connect(mapStateToProps)((props) => {
   return (<div>
     <List title="Категорії" {...props}
           filter={<CategoryFilter/>} actions={<CategoryActions/>}>
@@ -50,17 +60,17 @@ const CategoryList = (props) => {
         <TextField label="Опис" source="description"/>
         <DateField label="Створена" source="createdAt"/>
         <DateField label="Оновлена" source="updatedAt"/>
-        <EditButton label="Редагувати"/>
+        { props.isAdmin ? <EditButton label="Редагувати"/> : <ShowButton label="Деталі"/>}
       </Datagrid>
     </List>
   </div>)
-};
+});
 
-const CategoryEditActions = connect(mapStateToProps)(({ basePath, data, refresh, isAdmin }) => (
+const CategoryEditActions = connect(mapStateToProps)(({basePath, data, refresh, isAdmin}) => (
   <CardActions style={{float: 'right', zIndex: 9999}}>
-    <ListButton basePath={basePath} />
-    {isAdmin && <DeleteButton basePath={basePath} record={data} />}
-    <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />} />
+    <ListButton basePath={basePath} record={data}/>
+    {isAdmin && <DeleteButton basePath={basePath} record={data}/>}
+    <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
   </CardActions>
 ));
 
