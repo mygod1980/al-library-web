@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-import {Edit, Filter, Create, SimpleForm, Show, SimpleShowLayout} from 'admin-on-rest/lib/mui';
+import {Edit, Filter, Create, SimpleForm, SimpleShowLayout} from 'admin-on-rest/lib/mui';
 import {TextInput, DisabledInput, LongTextInput} from 'admin-on-rest/lib/mui/input';
 import {TextField} from 'admin-on-rest/lib/mui/field';
 import {Datagrid, List} from 'admin-on-rest/lib/mui/list';
@@ -27,13 +27,18 @@ const CategoryFilter = (props) => {
   )
 };
 
-const CategoryActions = ({resource, filter, displayedFilters, filterValues, basePath, showFilter, refresh}) => (
+const mapStateToProps = (state) => {
+  const {user} = state.wrapper;
+  return {user, isAdmin: user && user.role === config.roles.ADMIN};
+};
+
+const CategoryActions = connect(mapStateToProps)(({resource, filter, displayedFilters, filterValues, basePath, showFilter, refresh, isAdmin}) => (
   <CardActions style={{float: 'right', zIndex: 99999}}>
     {filter && React.cloneElement(filter, {resource, showFilter, displayedFilters, filterValues, context: 'button'}) }
-    <CreateButton basePath={basePath}/>
+    {isAdmin && <CreateButton basePath={basePath}/>}
     <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
   </CardActions>
-);
+));
 
 const CategoryList = (props) => {
   return (<div>
@@ -51,13 +56,13 @@ const CategoryList = (props) => {
   </div>)
 };
 
-const CategoryEditActions = ({basePath, data, refresh}) => (
+const CategoryEditActions = connect(mapStateToProps)(({ basePath, data, refresh, isAdmin }) => (
   <CardActions style={{float: 'right', zIndex: 9999}}>
-    <ListButton basePath={basePath}/>
-    <DeleteButton basePath={basePath} record={data}/>
-    <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
+    <ListButton basePath={basePath} />
+    {isAdmin && <DeleteButton basePath={basePath} record={data} />}
+    <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />} />
   </CardActions>
-);
+));
 
 const CategoryEditForm = (props) => {
   const validator = {required: true};
@@ -73,13 +78,13 @@ const CategoryEditForm = (props) => {
 
 const CategoryShowForm = (props) => {
   return (
-    <Show title='Редагування' {...props} actions={<CategoryEditActions/>}>
+    <Edit title='Редагування' {...props} actions={<CategoryEditActions/>}>
       <SimpleShowLayout>
         <TextField label="ID" source="id"/>
         <TextField label="Назва" source="name"/>
         <TextField label="Опис" source="description"/>
       </SimpleShowLayout>
-    </Show>);
+    </Edit>);
 };
 
 const mapShowStateToProps = (state, props) => {
