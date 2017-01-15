@@ -96,5 +96,6 @@ table tr, table td {
   margin: 0;
 }
 
-
-
+.disabled {
+  cursor: not-allowed !important;
+}

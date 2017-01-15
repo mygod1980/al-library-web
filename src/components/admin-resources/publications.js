@@ -2,6 +2,7 @@
  * Created by eugenia on 20.09.16.
  */
 import _ from 'lodash';
+import Cookies from 'js-cookie';
 import React from 'react';
 import {connect} from 'react-redux';
 import {CardActions} from 'material-ui/Card';
@@ -13,7 +14,8 @@ import ContentCreate from 'material-ui/svg-icons/content/create';
 
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-import {Edit, Filter, Create, Show, SimpleForm, SimpleShowLayout} from 'admin-on-rest/lib/mui';
+import CloudDownload from 'material-ui/svg-icons/file/cloud-download';
+import {Edit, Filter, Create, SimpleForm, SimpleShowLayout} from 'admin-on-rest/lib/mui';
 import {TextInput, DisabledInput, LongTextInput} from 'admin-on-rest/lib/mui/input';
 import {TextField} from 'admin-on-rest/lib/mui/field';
 import {List} from 'admin-on-rest/lib/mui/list';
@@ -25,7 +27,6 @@ import SubdocumentArrayField from '../ui/fields/subdocument-array-field';
 import ReferenceManyInput from '../ui/inputs/reference-many-input';
 import bookCover from '../../img/book_cover.jpeg';
 import {config} from '../../config';
-
 const PublicationFilter = (props) => {
   return (
     <Filter {...props}>
@@ -34,7 +35,6 @@ const PublicationFilter = (props) => {
     </Filter>
   )
 };
-
 
 const PublicationActions = ({resource, filter, displayedFilters, filterValues, basePath, showFilter, refresh}) => (
   <CardActions style={{float: 'right', zIndex: 99999}}>
@@ -109,32 +109,53 @@ const PublicationList = connect(mapStateToProps)((props) => {
   </div>)
 });
 
-const PublicationEditActions = ({basePath, data, refresh}) => (
-  <CardActions style={{float: 'right', zIndex: 9999}}>
-    <ListButton basePath={basePath}/>
-    <DeleteButton basePath={basePath} record={data}/>
-    <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
-  </CardActions>
-);
+const mapActionsStateToProps = (state, props) => {
+  const {user} = state.wrapper;
+  return {user, isAdmin: user && user.role === config.roles.ADMIN};
+};
+const PublicationEditActions = connect(mapActionsStateToProps)(({basePath, data = {}, refresh, user, isAdmin}) => {
+  const accessToken = Cookies.get('access_token');
+  const downloadUrl = data.downloadUrl ? `${data.downloadUrl}?access_token=${encodeURIComponent(accessToken)}` : null;
+  const linkTitle = data.downloadUrl ? user ? 'Отримати файл' : 'Авторизуйтесь, щоб отримати файл' : 'Файлу немає';
+
+  return (
+    <CardActions style={{float: 'right', zIndex: 9}}>
+      <FlatButton primary label={linkTitle}
+                  href={downloadUrl}
+                  disabled={!downloadUrl}
+                  icon={<CloudDownload />}/>
+      <ListButton basePath={basePath}/>
+
+      {
+        isAdmin ?
+        <DeleteButton basePath={basePath} record={data}/> :
+          <span/>
+      }
+      <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
+    </CardActions>
+  )
+});
 
 const PublicationEditForm = (props) => {
   const validator = {required: true};
+
+
   return (
     <Edit title='Редагування' {...props} hasDelete={!props.isMe} actions={<PublicationEditActions/>}>
       <SimpleForm>
         <DisabledInput label="ID" source="id"/>
         <TextInput label="Назва" source="title" validator={validator}/>
-        <LongTextInput label="Анотація" source="description"/>
+        <LongTextInput label="Анотація" source="description" validator={validator}/>
         <ReferenceManyInput addField
                             label="Автори"
                             source="authors"
                             reference="authors"
-                            dataSourceConfig={{text: 'lastName', id: '_id'}}/>
+                            dataSourceConfig={{text: 'lastName', value: '_id'}}/>
         <ReferenceManyInput addField
                             label="Категорії"
                             source="categories"
                             reference="categories"
-                            dataSourceConfig={{text: 'name', id: '_id'}}/>
+                            dataSourceConfig={{text: 'name', value: '_id'}}/>
         <TextInput label="Дата публікації" type="number" source="publishedAt"/>
       </SimpleForm>
     </Edit>);
@@ -142,7 +163,7 @@ const PublicationEditForm = (props) => {
 const PublicationCreateForm = (props) => {
   const validator = (values) => {
     const errors = {};
-    const required = ['title'];
+    const required = ['title', 'description'];
 
     _.map(required, (value) => {
       if (!values[value]) {
@@ -162,19 +183,19 @@ const PublicationCreateForm = (props) => {
                             label="Автори"
                             source="authors"
                             reference="authors"
-                            dataSourceConfig={{text: 'lastName', id: '_id'}}/>
+                            dataSourceConfig={{text: 'lastName', value: '_id'}}/>
         <ReferenceManyInput addField
                             label="Категорії"
                             source="categories"
                             reference="categories"
-                            dataSourceConfig={{text: 'name', id: '_id'}}/>
+                            dataSourceConfig={{text: 'name', value: '_id'}}/>
         <TextInput label="Дата публікації" type="number" source="publishedAt"/>
       </SimpleForm>
     </Create>);
 };
 const PublicationShowForm = (props) => {
   return (
-    <Show title='Деталі' {...props}>
+    <Edit title='Деталі' {...props} actions={<PublicationEditActions/>}>
       <SimpleShowLayout>
         <TextField label="Назва" source="title"/>
         <TextField label="Анотація" source="description"/>
@@ -191,7 +212,7 @@ const PublicationShowForm = (props) => {
         <TextField label="Дата публікації" source="publishedAt"/>
         <DateField addLabel label="Додана до бібліотеки" source="createdAt" format="DD/MM/YYYY hh:mm"/>
       </SimpleShowLayout>
-    </Show>);
+    </Edit>);
 };
 
 const PublicationEdit = connect()(PublicationEditForm);

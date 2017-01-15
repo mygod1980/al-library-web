@@ -18,7 +18,7 @@ ChipInput.propTypes = {
   disabled: PropTypes.bool,
   defaultValue: PropTypes.arrayOf(PropTypes.object),
   onChange: PropTypes.func,
-  value: PropTypes.arrayOf(PropTypes.object),
+  value: PropTypes.arrayOf(PropTypes.oneOf([PropTypes.object, PropTypes.string])),
   onRequestAdd: PropTypes.func,
   onRequestDelete: PropTypes.func,
   dataSource: PropTypes.arrayOf(PropTypes.object),
@@ -84,7 +84,7 @@ class ReferenceManyInput extends React.Component {
 
 
   handleRequestDelete({props}) {
-    const {record, source} = this.props;
+    const {record, source, input} = this.props;
     const filteredItems = this.state.selected.filter((item) => {
       return item.props.id !== props.id;
     });
@@ -92,6 +92,9 @@ class ReferenceManyInput extends React.Component {
     record[source] = filteredItems.map((item) => {
       return item.props.id;
     });
+
+    input.onChange(record[source]);
+
     return this.setState({selected: filteredItems});
   };
 
