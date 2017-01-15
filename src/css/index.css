@@ -96,5 +96,13 @@ table tr, table td {
   margin: 0;
 }
 
+.disabled {
+  cursor: not-allowed !important;
+}
 
-
+.text-center {
+  text-align: center;
+  padding: 2em;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
