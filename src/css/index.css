@@ -99,3 +99,10 @@ table tr, table td {
 .disabled {
   cursor: not-allowed !important;
 }
+
+.text-center {
+  text-align: center;
+  padding: 2em;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

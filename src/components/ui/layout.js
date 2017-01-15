@@ -10,6 +10,7 @@ import AppBar from 'material-ui/AppBar';
 import CircularProgress from 'material-ui/CircularProgress';
 import People from 'material-ui/svg-icons/social/people';
 import Person from 'material-ui/svg-icons/social/person';
+import CloudUpload from 'material-ui/svg-icons/file/cloud-upload';
 import Label from 'material-ui/svg-icons/action/label';
 import FolderOPen from 'material-ui/svg-icons/file/folder-open';
 import UserDropDown from './header/user-dropdown';
@@ -33,6 +34,7 @@ class Layout extends React.Component {
 
     if (this.props.isAdmin) {
       resources.push({name: 'resources/users', icon: People, options: {label: 'Користувачі'}, list: true});
+      resources.push({name: 'resources/upload', icon: CloudUpload, options: {label: 'Додати файл книги'}, list: true});
     }
 
     return (

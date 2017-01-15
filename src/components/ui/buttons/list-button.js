@@ -6,7 +6,7 @@ import {Link} from 'react-router';
 import FlatButton from 'material-ui/FlatButton';
 import ActionList from 'material-ui/svg-icons/action/list';
 
-const ListButton = ({basePath = '', label = 'Список', record = {}, ...other}) => {
+const ListButton = ({basePath = '', label = 'Список', record = {}}) => {
   let newPath = basePath;
   if (basePath.includes(record.id)) {
     newPath = basePath.replace(`/${record.id}`, '');

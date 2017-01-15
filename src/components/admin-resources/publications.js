@@ -15,6 +15,7 @@ import ContentCreate from 'material-ui/svg-icons/content/create';
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
 import CloudDownload from 'material-ui/svg-icons/file/cloud-download';
+import CloudUpload from 'material-ui/svg-icons/file/cloud-upload';
 import {Edit, Filter, Create, SimpleForm, SimpleShowLayout} from 'admin-on-rest/lib/mui';
 import {TextInput, DisabledInput, LongTextInput} from 'admin-on-rest/lib/mui/input';
 import {TextField} from 'admin-on-rest/lib/mui/field';
@@ -128,16 +129,24 @@ const PublicationEditActions = connect(mapStateToProps)(({basePath, data = {}, r
 
   return (
     <CardActions style={{float: 'right', zIndex: 9}}>
-      <FlatButton primary label={linkTitle}
-                  href={downloadUrl}
-                  disabled={!downloadUrl}
-                  icon={<CloudDownload />}/>
-      <ListButton basePath={basePath} record={data}/>
 
       {
-        isAdmin ?
-          <DeleteButton basePath={basePath} record={data}/> :
-          <span/>
+        user && <FlatButton primary
+                            label={linkTitle}
+                            href={downloadUrl}
+                            disabled={!downloadUrl}
+                            icon={<CloudDownload />}/>
+
+      }
+      {
+        isAdmin && <FlatButton primary
+                               label={!downloadUrl ? "Додати файл" : "Замінити файл"}
+                               href={`#/resources/publications/${data.id}/upload`}
+                               icon={<CloudUpload />}/>
+      }
+      <ListButton basePath={basePath} record={data}/>
+      {
+        isAdmin && <DeleteButton basePath={basePath} record={data}/>
       }
       <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
     </CardActions>
