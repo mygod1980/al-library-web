@@ -11,14 +11,14 @@ const TimesArrayField = ({ input, label, record, source}) => (
 );
 
 TimesArrayField.propTypes = {
-  includesLabel: PropTypes.bool.isRequired,
+  addField: PropTypes.bool.isRequired,
   input: PropTypes.object,
   record: PropTypes.object,
   label: PropTypes.string,
 };
 
 TimesArrayField.defaultProps = {
-  includesLabel: true,
+  addField: true,
 };
 
 export default TimesArrayField;

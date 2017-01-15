@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-import {Edit, Filter, Create, SimpleForm} from 'admin-on-rest/lib/mui';
+import {Edit, Filter, Create, SimpleForm, SimpleShowLayout} from 'admin-on-rest/lib/mui';
 import {TextInput, DisabledInput, LongTextInput} from 'admin-on-rest/lib/mui/input';
 import {TextField} from 'admin-on-rest/lib/mui/field';
 import {Datagrid, List} from 'admin-on-rest/lib/mui/list';
@@ -15,7 +15,9 @@ import DateField from '../ui/fields/date-field';
 import CreateButton from '../ui/buttons/create-button';
 import EditButton from '../ui/buttons/edit-button';
 import DeleteButton from '../ui/buttons/delete-button';
+import ShowButton from '../ui/buttons/show-button';
 import ListButton from '../ui/buttons/list-button';
+import {config} from '../../config';
 
 const AuthorFilter = (props) => {
   return (
@@ -26,16 +28,20 @@ const AuthorFilter = (props) => {
   )
 };
 
+const mapStateToProps = (state) => {
+  const {user} = state.wrapper;
+  return {user, isAdmin: user && user.role === config.roles.ADMIN};
+};
 
-const AuthorActions = ({resource, filter, displayedFilters, filterValues, basePath, showFilter, refresh}) => (
+const AuthorActions = connect(mapStateToProps)(({resource, filter, displayedFilters, filterValues, basePath, showFilter, refresh, isAdmin}) => (
   <CardActions style={{float: 'right', zIndex: 99999}}>
     {filter && React.cloneElement(filter, {resource, showFilter, displayedFilters, filterValues, context: 'button'}) }
-    <CreateButton basePath={basePath}/>
+    {isAdmin && <CreateButton basePath={basePath}/>}
     <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
   </CardActions>
-);
+));
 
-const AuthorList = (props) => {
+const AuthorList = connect(mapStateToProps)((props) => {
   return (<div>
     <List title="Автори" {...props}
           filter={<AuthorFilter/>} actions={<AuthorActions/>}>
@@ -47,19 +53,19 @@ const AuthorList = (props) => {
         <TextField label="Опис" source="description"/>
         <DateField label="Створений" source="createdAt"/>
         <DateField label="Оновлений" source="updatedAt"/>
-        <EditButton label="Редагувати"/>
+        {props.isAdmin ? <EditButton label="Редагувати"/> : <ShowButton label="Деталі"/>}
       </Datagrid>
     </List>
   </div>)
-};
+});
 
-const AuthorEditActions = ({ basePath, data, refresh }) => (
+const AuthorEditActions = connect(mapStateToProps)(({ basePath, data, refresh, isAdmin }) => (
   <CardActions style={{float: 'right', zIndex: 9999}}>
-    <ListButton basePath={basePath} />
-    <DeleteButton basePath={basePath} record={data} />
+    <ListButton basePath={basePath} record={data} />
+    {isAdmin && <DeleteButton basePath={basePath} record={data} />}
     <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />} />
   </CardActions>
-);
+));
 
 const AuthorEditForm = (props) => {
   const validator = {required: true};
@@ -74,6 +80,30 @@ const AuthorEditForm = (props) => {
       </SimpleForm>
     </Edit>);
 };
+
+const AuthorShowForm = (props) => {
+  return (
+    <Edit title='Деталі' {...props} actions={<AuthorEditActions/>}>
+      <SimpleShowLayout>
+        <TextField label="ID" source="id"/>
+        <TextField label="Ім'я" source="firstName"/>
+        <TextField label="По батькові" source="secondName"/>
+        <TextField label="Прізвище" source="lastName"/>
+        <TextField label="Опис" source="description"/>
+      </SimpleShowLayout>
+    </Edit>);
+};
+
+const mapShowStateToProps = (state, props) => {
+  const isAdmin = state.wrapper.user.role === config.roles.ADMIN;
+
+  return {
+    hasDelete: isAdmin,
+    hasEdit: isAdmin
+  };
+};
+
+const AuthorShow = connect(mapShowStateToProps)(AuthorShowForm);
 
 const AuthorCreateForm = (props) => {
   const validator = (values) => {
@@ -103,6 +133,6 @@ const AuthorCreateForm = (props) => {
 const AuthorEdit = connect()(AuthorEditForm);
 const AuthorCreate = connect()(AuthorCreateForm);
 
-export {AuthorList, AuthorEdit, AuthorCreate};
+export {AuthorList, AuthorEdit, AuthorCreate, AuthorShow};
 
 

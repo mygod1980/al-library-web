@@ -4,30 +4,11 @@
 import {GET_LIST, GET_MATCHING, GET_ONE, GET_MANY, CREATE, UPDATE, DELETE, fetchUtils} from "admin-on-rest";
 import Cookies from "js-cookie";
 import {SORT_DESC} from "admin-on-rest/lib/reducer/resource/list/queryReducer";
-import {LOGOUT, GET_TOKEN, PUT, GET_GWT_TOKEN, config} from "../config";
+import {LOGOUT, GET_TOKEN, PUT, config} from "../config";
 import fetch from "./fetch";
 
 const apiUrl = `${config.backendUrl}/${config.backendBasePath}`;
 const headers = {'Accept': 'application/json', 'Content-Type': 'application/json'};
-const isGtwResource = (resource) => {
-  if (resource.startsWith('webinars')) {
-    if (resource.includes('registrants')) {
-      return 'registrantKey';
-    }
-    return 'webinarKey';
-  }
-};
-
-const getIdField = (resource) => {
-  if (resource.startsWith('webinars')) {
-    if (resource.includes('registrants')) {
-      return 'registrantKey';
-    }
-    return 'webinarKey';
-  }
-
-  return '_id';
-};
 
 const prepareQuery = (params) => {
   const filter = Object.assign({}, params.filter || {});
@@ -64,13 +45,13 @@ const convertHttpResponseToRest = (response, type, resource, params) => {
   switch (type) {
     case GET_LIST:
       return {
-        data: json.map(x => Object.assign({}, x, {id: x[getIdField(resource)]})),
-        total: isGtwResource(resource) ? json.length : response.total,
+        data: json.map(x => Object.assign({}, x, {id: x['_id']})),
+        total: response.total,
       };
     case GET_ONE:
-      return Object.assign(json, {id: json[getIdField(resource)]});
+      return Object.assign(json, {id: json['_id']});
     case CREATE:
-      return {...params.data, id: json[getIdField(resource)]};
+      return {...json, id: json['_id']};
     default:
       return json;
   }
@@ -86,6 +67,7 @@ const convertRestRequestToHttp = (type, resource, params) => {
   let url = '';
   const {queryParameters} = fetchUtils;
   const options = {};
+
   const accessToken = Cookies.get('access_token');
   if (accessToken) {
     options.headers = Object.assign({
@@ -103,16 +85,22 @@ const convertRestRequestToHttp = (type, resource, params) => {
 
   switch (type) {
     case GET_LIST: {
-      const {page = 0, perPage = 10} = params.pagination || {};
+      let {page = 0, perPage = 10} = params.pagination || {};
       let {field, order} = params.sort || {};
       if (field === 'id') {
-        field = getIdField(resource);
+        field = '_id';
       }
       if (order === SORT_DESC) {
         order = -1;
       } else {
         order = 1;
       }
+
+      if (params.filter && params.filter.perPage) {
+        perPage = params.filter.perPage;
+        delete params.filter.perPage;
+      }
+
       const query = {
         perPage,
         page,
@@ -139,7 +127,7 @@ const convertRestRequestToHttp = (type, resource, params) => {
       break;
     case GET_MANY: {
       const query = {
-        filter: JSON.stringify({[getIdField(resource)]: {$in: [params.id]}}),
+        filter: JSON.stringify({'_id': {$in: [params.id]}}),
       };
       url = `${apiUrl}/${resource}?${queryParameters(query)}`;
       break;
@@ -178,15 +166,6 @@ const convertRestRequestToHttp = (type, resource, params) => {
       options.body = JSON.stringify(params.data);
       options.method = 'POST';
       break;
-
-    case GET_GWT_TOKEN:
-      url = resource;
-      options.body = `grant_type=authorization_code&client_id=${config.gtw.clientId}&code=${params.code}`;
-      options.method = 'POST';
-
-      options.headers = new Headers({'Content-Type': 'application/x-www-form-urlencoded'});
-      break;
-
     default:
       throw new Error(`Unsupported fetch action type ${type}`);
   }
@@ -206,7 +185,7 @@ const sendRequest = (type, resource, params = {}) => {
   return fetch(url, options)
     .then((result) => {
       response.json = result.json;
-      if (type === GET_LIST && !isGtwResource(resource)) {
+      if (type === GET_LIST) {
         const query = prepareQuery(params);
 
         const {queryParameters} = fetchUtils;

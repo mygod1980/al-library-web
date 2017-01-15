@@ -6,10 +6,18 @@ import React, {PropTypes} from "react";
 const LinkField = ({record = {}, source, link, replaceProp, displayName, ...other}) => {
   delete other.basePath;
   delete other.input;
-  const url = link.replace(`:${replaceProp}`, record[replaceProp]);
+  let url = link.replace(`:${replaceProp}`, record[replaceProp]);
+  let className = '';
+
+  if (!record[source]) {
+    className = 'disabled';
+    url = '#';
+  }
+
   return (
     <a style={{cursor: 'pointer'}}
        {...other}
+       className={className}
        href={url}>
       {displayName || record[source]}
     </a>

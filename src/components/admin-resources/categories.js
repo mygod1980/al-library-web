@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-import {Edit, Filter, Create, SimpleForm} from 'admin-on-rest/lib/mui';
+import {Edit, Filter, Create, SimpleForm, SimpleShowLayout} from 'admin-on-rest/lib/mui';
 import {TextInput, DisabledInput, LongTextInput} from 'admin-on-rest/lib/mui/input';
 import {TextField} from 'admin-on-rest/lib/mui/field';
 import {Datagrid, List} from 'admin-on-rest/lib/mui/list';
@@ -16,6 +16,8 @@ import CreateButton from '../ui/buttons/create-button';
 import EditButton from '../ui/buttons/edit-button';
 import DeleteButton from '../ui/buttons/delete-button';
 import ListButton from '../ui/buttons/list-button';
+import ShowButton from '../ui/buttons/show-button';
+import {config} from "../../config";
 
 const CategoryFilter = (props) => {
   return (
@@ -26,15 +28,29 @@ const CategoryFilter = (props) => {
   )
 };
 
-const CategoryActions = ({resource, filter, displayedFilters, filterValues, basePath, showFilter, refresh}) => (
+const mapStateToProps = (state) => {
+  const {user} = state.wrapper;
+  return {user, isAdmin: user && user.role === config.roles.ADMIN};
+};
+
+const CategoryActions = connect(mapStateToProps)(({
+  resource,
+  filter,
+  displayedFilters,
+  filterValues,
+  basePath,
+  showFilter,
+  refresh,
+  isAdmin
+}) => (
   <CardActions style={{float: 'right', zIndex: 99999}}>
     {filter && React.cloneElement(filter, {resource, showFilter, displayedFilters, filterValues, context: 'button'}) }
-    <CreateButton basePath={basePath}/>
+    {isAdmin && <CreateButton basePath={basePath}/>}
     <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
   </CardActions>
-);
+));
 
-const CategoryList = (props) => {
+const CategoryList = connect(mapStateToProps)((props) => {
   return (<div>
     <List title="Категорії" {...props}
           filter={<CategoryFilter/>} actions={<CategoryActions/>}>
@@ -44,19 +60,19 @@ const CategoryList = (props) => {
         <TextField label="Опис" source="description"/>
         <DateField label="Створена" source="createdAt"/>
         <DateField label="Оновлена" source="updatedAt"/>
-        <EditButton label="Редагувати"/>
+        { props.isAdmin ? <EditButton label="Редагувати"/> : <ShowButton label="Деталі"/>}
       </Datagrid>
     </List>
   </div>)
-};
+});
 
-const CategoryEditActions = ({basePath, data, refresh}) => (
+const CategoryEditActions = connect(mapStateToProps)(({basePath, data, refresh, isAdmin}) => (
   <CardActions style={{float: 'right', zIndex: 9999}}>
-    <ListButton basePath={basePath}/>
-    <DeleteButton basePath={basePath} record={data}/>
+    <ListButton basePath={basePath} record={data}/>
+    {isAdmin && <DeleteButton basePath={basePath} record={data}/>}
     <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
   </CardActions>
-);
+));
 
 const CategoryEditForm = (props) => {
   const validator = {required: true};
@@ -70,6 +86,27 @@ const CategoryEditForm = (props) => {
     </Edit>);
 };
 
+const CategoryShowForm = (props) => {
+  return (
+    <Edit title='Деталі' {...props} actions={<CategoryEditActions/>}>
+      <SimpleShowLayout>
+        <TextField label="ID" source="id"/>
+        <TextField label="Назва" source="name"/>
+        <TextField label="Опис" source="description"/>
+      </SimpleShowLayout>
+    </Edit>);
+};
+
+const mapShowStateToProps = (state, props) => {
+  const isAdmin = state.wrapper.user.role === config.roles.ADMIN;
+
+  return {
+    hasDelete: isAdmin,
+    hasEdit: isAdmin
+  };
+};
+
+const CategoryShow = connect(mapShowStateToProps)(CategoryShowForm);
 const CategoryCreateForm = (props) => {
   const validator = (values) => {
     const errors = {};
@@ -96,6 +133,6 @@ const CategoryCreateForm = (props) => {
 const CategoryEdit = connect()(CategoryEditForm);
 const CategoryCreate = connect()(CategoryCreateForm);
 
-export {CategoryList, CategoryEdit, CategoryCreate};
+export {CategoryList, CategoryEdit, CategoryCreate, CategoryShow};
 
 
