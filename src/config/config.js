@@ -20,12 +20,12 @@ export const config = {
     info: 'info',
     warning: 'warning'
   },
-  backendUrl: process.env.BACKEND_URL || 'http://localhost:1340',
+  backendUrl: process.env.REACT_APP_BACKEND_URL || 'http://localhost:1340',
   backendBasePath: 'api',
   auth: {
     path: 'oauth',
-    clientId: process.env.CLIENT_KEY || 'default',
-    clientSecret: process.env.CLIENT_SECRET || 'default'
+    clientId: process.env.REACT_APP_CLIENT_ID || 'default',
+    clientSecret: process.env.REACT_APP_CLIENT_SECRET || 'default'
   },
   resources: {
     users: 'users',

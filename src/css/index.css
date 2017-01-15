@@ -80,6 +80,10 @@ a {
   padding: 0 !important;
 }
 
+table tr, table td {
+  vertical-align: middle;
+}
+
 
 .subdocuments-array {
   width: 270px !important;
@@ -92,5 +96,13 @@ a {
   margin: 0;
 }
 
+.disabled {
+  cursor: not-allowed !important;
+}
 
-
+.text-center {
+  text-align: center;
+  padding: 2em;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

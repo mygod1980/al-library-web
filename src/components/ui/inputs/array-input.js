@@ -22,7 +22,7 @@ const ArrayInput = ({input, label, source, options, meta: { touched, error }, re
 ArrayInput.propTypes = {
   source: PropTypes.string.isRequired,
   record: PropTypes.object,
-  includesLabel: PropTypes.bool,
+  addField: PropTypes.bool,
   input: PropTypes.object,
   label: PropTypes.string,
   meta: PropTypes.object,
@@ -34,7 +34,7 @@ ArrayInput.propTypes = {
 };
 
 ArrayInput.defaultProps = {
-  includesLabel: true,
+  addField: true,
   options: {}
 };
 export default ArrayInput;

@@ -31,11 +31,11 @@ class UserDropDown extends React.Component {
     >
 
       <MenuItem onClick={moveToOwnProfile}>
-        My Profile
+        Мій профіль
       </MenuItem>
 
       <MenuItem onClick={moveToLogin}>
-        Log Out
+        Вийти
       </MenuItem>
 
     </IconMenu>)
