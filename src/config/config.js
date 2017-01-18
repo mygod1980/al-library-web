@@ -38,6 +38,10 @@ export const config = {
       PENDING: 'pending',
       APPROVED: 'approved',
       REJECTED: 'rejected'
+    },
+    types: {
+      REGISTRATION: 'registration',
+      DOWNLOAD_LINK: 'downloadLink'
     }
   },
   roles: {
