@@ -164,6 +164,7 @@ class ReferenceManyInput extends React.Component {
                  onUpdateInput={this.handleUpdateInput.bind(this)}
                  dataSourceConfig={dataSourceConfig}
                  value={this.state.selected}
+                 style={this.props.style || {}}
                  floatingLabelText={label}
                  onRequestAdd={this.handleRequestAdd.bind(this)}
                  onNewRequest={this.handleRequestAdd.bind(this)}
@@ -182,4 +183,4 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default connect(mapStateToProps)(withRouter(ReferenceManyInput));
+export default  connect(mapStateToProps)(withRouter(ReferenceManyInput));

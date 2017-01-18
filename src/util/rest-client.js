@@ -1,6 +1,7 @@
 /**
  * Created by eugenia on 20.09.16.
  */
+import _ from 'lodash';
 import {GET_LIST, GET_MATCHING, GET_ONE, GET_MANY, CREATE, UPDATE, DELETE, fetchUtils} from "admin-on-rest";
 import Cookies from "js-cookie";
 import {SORT_DESC} from "admin-on-rest/lib/reducer/resource/list/queryReducer";
@@ -107,10 +108,26 @@ const convertRestRequestToHttp = (type, resource, params) => {
         orderBy: JSON.stringify({[field]: order})
       };
 
-      if (params.filter && params.filter.q) {
-        query.q = params.filter.q;
-        delete params.filter.q;
+      if (params.filter) {
+        if (params.filter.q) {
+          query.q = params.filter.q;
+          delete params.filter.q;
+        }
+
+        const arrayFields = ['authors', 'categories'];
+        _.map(arrayFields, (fieldName) => {
+          if (params.filter[fieldName]) {
+            if(params.filter[fieldName].length > 0) {
+              params.filter[fieldName] = {$in: params.filter[fieldName]};
+            } else {
+              delete params.filter[fieldName];
+            }
+          }
+
+          return fieldName;
+        });
       }
+
       query.filter = JSON.stringify(params.filter || {});
       url = `${apiUrl}/${resource}?${queryParameters(query)}`;
       break;

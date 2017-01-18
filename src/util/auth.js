@@ -24,7 +24,7 @@ export default {
           this.resetSession();
           return null;
         });
-    } else {
+    } else  {
       return this.renewToken()
         .then(() => {
           return this.setupUserModel();
@@ -43,6 +43,7 @@ export default {
   renewToken() {
     console.info('Trying to renew access token..');
     const refresh_token = Cookies.get('refresh_token');
+
     const options = {
       data: Object.assign({'grant_type': 'refresh_token', 'refresh_token': refresh_token}, clientAuth)
     };

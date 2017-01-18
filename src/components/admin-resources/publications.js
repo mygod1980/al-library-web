@@ -33,6 +33,13 @@ const PublicationFilter = (props) => {
     <Filter {...props}>
       <TextInput label="Розмір сторінки" type="number" source="perPage" alwaysOn name="perPage"/>
       <TextInput label="Пошук" source="q" alwaysOn name="q"/>
+      <ReferenceManyInput alwaysOn
+                          style={{marginTop: '-20px', marginLeft: '150px'}}
+                          label="Категорії"
+                          source="categories"
+                          reference="categories"
+                          name="categories"
+                          dataSourceConfig={{text: 'name', value: '_id'}}/>
     </Filter>
   )
 };
