@@ -1,6 +1,8 @@
 /**
+ *
  * Created by eugenia on 20.09.16.
  */
+import _ from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
 import {CardActions} from 'material-ui/Card';
@@ -84,8 +86,7 @@ const mapShowStateToProps = (state) => {
   const isAdmin = state.wrapper.user.role === config.roles.ADMIN;
 
   return {
-    hasDelete: isAdmin,
-    hasEdit: isAdmin
+    hasDelete: isAdmin
   };
 };
 
@@ -113,9 +114,8 @@ const RequestCreateForm = (props) => {
   return (
     <Create {...props}>
       <SimpleForm defaultValue={props.defaultValue} validation={validator}>
-        <TextInput label="Тип" source="type"/>
+        <TextInput label="Тип" source="type" elStyle={{display: 'none'}}/>
         <TextInput label="Email" source="username"/>
-        <TextInput label="Статус" source="status"/>
         <ObjectInput addField label="Додатково" source="extra" sourceConfig={sourceConfig}/>
       </SimpleForm>
     </Create>);
@@ -137,7 +137,7 @@ const mapCreateStateToProps = (state, props) => {
     title += 'доступ до книги';
   }
 
-  return {title, publication};
+  return {title, publication, defaultValue: {type}};
 };
 const RequestCreate = connect(mapCreateStateToProps)(RequestCreateForm);
 

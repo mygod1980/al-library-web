@@ -37,10 +37,10 @@ class ObjectInput extends React.Component {
       {
         sourceConfig.map((input) => {
           return (<div>
-            <TextField value={this.state[input.key]}
-                       key={input.key}
+            <TextField value={this.state[input.source]}
+                       key={input.source}
                        floatingLabelText={input.label}
-                       onChange={this.onChange(input.key)}
+                       onChange={this.onChange(input.source)}
             />
           </div>)
         })
