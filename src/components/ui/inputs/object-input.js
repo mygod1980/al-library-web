@@ -1,39 +1,52 @@
-import React, { PropTypes } from 'react';
-import Toggle from 'material-ui/Toggle';
+import React, {PropTypes} from 'react';
+import {TextField} from 'material-ui';
 
-const styles = {
-  block: {
-    margin: '1rem 0',
-    maxWidth: 250,
-  },
-  label: {
-    color: 'rgba(0, 0, 0, 0.298039)',
-  },
-  toggle: {
-    marginBottom: 16,
-  },
-};
+class ObjectInput extends React.Component {
 
-const BooleanInput = ({ input, label }) => (
-  <div style={styles.block}>
-    <Toggle
-      {...input}
-      defaultToggled={input.value || false}
-      labelStyle={styles.label}
-      style={styles.toggle}
-      label={label}
-    />
-  </div>
-);
+  constructor(props) {
+    super(props);
+    const state = {};
 
-BooleanInput.propTypes = {
-  addField: PropTypes.bool.isRequired,
-  input: PropTypes.object,
-  label: PropTypes.string,
-};
+    this.props.sourceConfig.map((item) => {
+      state[item.source] = '';
+      return state;
+    });
 
-BooleanInput.defaultProps = {
-  addField: true,
-};
+    this.state = state;
+  }
 
-export default BooleanInput;
+  static PropTypes = {
+    /* {source: '', label: ''} */
+    sourceConfig: PropTypes.arrayOf(PropTypes.object).isRequired
+  };
+
+  onChange = (source) => {
+    const {input} = this.props;
+
+    return ({target: {value}}) => {
+      this.setState({[source]: value});
+
+      return input.onChange(this.state);
+    };
+  };
+
+  render() {
+    const {sourceConfig, label} = this.props;
+    return (<div>
+      <div>{label}</div>
+      {
+        sourceConfig.map((input) => {
+          return (<div>
+            <TextField value={this.state[input.key]}
+                       key={input.key}
+                       floatingLabelText={input.label}
+                       onChange={this.onChange(input.key)}
+            />
+          </div>)
+        })
+      }
+    </div>)
+  }
+}
+
+export default ObjectInput;

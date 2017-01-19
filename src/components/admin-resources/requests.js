@@ -1,22 +1,22 @@
 /**
  * Created by eugenia on 20.09.16.
  */
-import _ from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
 import {CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
 import {Edit, Filter, Create, SimpleForm, SimpleShowLayout} from 'admin-on-rest/lib/mui';
-import {TextInput, DisabledInput, LongTextInput} from 'admin-on-rest/lib/mui/input';
+import {TextInput} from 'admin-on-rest/lib/mui/input';
 import {TextField} from 'admin-on-rest/lib/mui/field';
 import {Datagrid, List} from 'admin-on-rest/lib/mui/list';
 import DateField from '../ui/fields/date-field';
 import CreateButton from '../ui/buttons/create-button';
-import EditButton from '../ui/buttons/edit-button';
 import DeleteButton from '../ui/buttons/delete-button';
 import ShowButton from '../ui/buttons/show-button';
 import ListButton from '../ui/buttons/list-button';
+import ObjectField from '../ui/fields/object-field';
+import ObjectInput from '../ui/inputs/object-input';
 import {config} from '../../config';
 
 const RequestFilter = (props) => {
@@ -43,14 +43,14 @@ const RequestActions = connect(mapStateToProps)(({resource, filter, displayedFil
 
 const RequestList = connect(mapStateToProps)((props) => {
   return (<div>
-    <List title="Автори" {...props}
+    <List title="Запити" {...props}
           filter={<RequestFilter/>} actions={<RequestActions/>}>
       <Datagrid selectable={false}>
         <TextField label="id" source="id"/>
         <TextField label="Тип" source="type"/>
         <TextField label="Email" source="username"/>
-        <TextField label="Прізвище" source="status"/>
-        <TextField label="Опис" source="description"/>
+        <TextField label="Статус" source="status"/>
+        <ObjectField label="Додатково" source="extra"/>
         <DateField label="Створений" source="createdAt"/>
         <DateField label="Оновлений" source="updatedAt"/>
         <ShowButton label="Деталі"/>
@@ -67,20 +67,6 @@ const RequestEditActions = connect(mapStateToProps)(({basePath, data, refresh, i
   </CardActions>
 ));
 
-const RequestEditForm = (props) => {
-  const validator = {required: true};
-  return (
-    <Edit title='Редагування' {...props} actions={<RequestEditActions/>}>
-      <SimpleForm>
-        <DisabledInput label="ID" source="id"/>
-        <TextInput label="Тип" source="type" validation={validator}/>
-        <TextInput label="Email" source="username" validation={validator}/>
-        <TextInput label="Прізвище" source="status" validation={validator}/>
-        <LongTextInput label="Опис" source="description"/>
-      </SimpleForm>
-    </Edit>);
-};
-
 const RequestShowForm = (props) => {
   return (
     <Edit title='Деталі' {...props} actions={<RequestEditActions/>}>
@@ -88,13 +74,13 @@ const RequestShowForm = (props) => {
         <TextField label="ID" source="id"/>
         <TextField label="Тип" source="type"/>
         <TextField label="Email" source="username"/>
-        <TextField label="Прізвище" source="status"/>
-        <TextField label="Опис" source="description"/>
+        <TextField label="Статус" source="status"/>
+        <ObjectField label="Додатково" source="extra"/>
       </SimpleShowLayout>
     </Edit>);
 };
 
-const mapShowStateToProps = (state, props) => {
+const mapShowStateToProps = (state) => {
   const isAdmin = state.wrapper.user.role === config.roles.ADMIN;
 
   return {
@@ -115,19 +101,25 @@ const RequestCreateForm = (props) => {
     return errors;
   };
 
+  const sourceConfig = [];
+
+  if (props.location.query.type === config.request.types.REGISTRATION) {
+    sourceConfig.push({source: 'firstName', label: "Ім'я"});
+    sourceConfig.push({source: 'lastName', label: 'Прізвище'});
+  } else /* type === DOWNLOAD_LINK */ {
+    sourceConfig.push({source: 'publicationId', label: 'Ідентифікатор книги'});
+  }
 
   return (
-    <Create {...props} hasDelete={!props.isMe}>
+    <Create {...props}>
       <SimpleForm defaultValue={props.defaultValue} validation={validator}>
         <TextInput label="Тип" source="type"/>
         <TextInput label="Email" source="username"/>
-        <TextInput label="Прізвище" source="status"/>
-        <LongTextInput label="Опис" source="description"/>
+        <TextInput label="Статус" source="status"/>
+        <ObjectInput addField label="Додатково" source="extra" sourceConfig={sourceConfig}/>
       </SimpleForm>
     </Create>);
 };
-
-const RequestEdit = connect()(RequestEditForm);
 
 const mapCreateStateToProps = (state, props) => {
   if (!props.location.type) {
@@ -149,6 +141,6 @@ const mapCreateStateToProps = (state, props) => {
 };
 const RequestCreate = connect(mapCreateStateToProps)(RequestCreateForm);
 
-export {RequestList, RequestEdit, RequestCreate, RequestShow};
+export {RequestList, RequestCreate, RequestShow};
 
 

@@ -34,6 +34,8 @@ class Layout extends React.Component {
 
     if (this.props.isAdmin) {
       resources.push({name: 'resources/users', icon: People, options: {label: 'Користувачі'}, list: true});
+      /* TODO: set new icon */
+      resources.push({name: 'resources/requests', icon: People, options: {label: 'Запити'}, list: true});
       resources.push({name: 'resources/upload', icon: CloudUpload, options: {label: 'Додати файл книги'}, list: true});
     }
 
