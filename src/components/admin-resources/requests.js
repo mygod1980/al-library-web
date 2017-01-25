@@ -2,24 +2,25 @@
  *
  * Created by eugenia on 20.09.16.
  */
-import _ from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
 import {CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
+import {CREATE} from 'admin-on-rest';
 import {Edit, Filter, Create, SimpleForm, SimpleShowLayout} from 'admin-on-rest/lib/mui';
 import {TextInput} from 'admin-on-rest/lib/mui/input';
 import {TextField} from 'admin-on-rest/lib/mui/field';
 import {Datagrid, List} from 'admin-on-rest/lib/mui/list';
 import DateField from '../ui/fields/date-field';
-import CreateButton from '../ui/buttons/create-button';
 import DeleteButton from '../ui/buttons/delete-button';
 import ShowButton from '../ui/buttons/show-button';
 import ListButton from '../ui/buttons/list-button';
 import ObjectField from '../ui/fields/object-field';
 import ObjectInput from '../ui/inputs/object-input';
 import {config} from '../../config';
+import sendRequest from '../../util/rest-client';
+import {notify} from '../../reducers/wrapper/actions';
 
 const RequestFilter = (props) => {
   return (
@@ -38,7 +39,6 @@ const mapStateToProps = (state) => {
 const RequestActions = connect(mapStateToProps)(({resource, filter, displayedFilters, filterValues, basePath, showFilter, refresh, isAdmin}) => (
   <CardActions style={{float: 'right', zIndex: 99999}}>
     {filter && React.cloneElement(filter, {resource, showFilter, displayedFilters, filterValues, context: 'button'}) }
-    {isAdmin && <CreateButton basePath={basePath}/>}
     <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
   </CardActions>
 ));
@@ -61,23 +61,54 @@ const RequestList = connect(mapStateToProps)((props) => {
   </div>)
 });
 
-const RequestEditActions = connect(mapStateToProps)(({basePath, data, refresh, isAdmin}) => (
-  <CardActions style={{float: 'right', zIndex: 9999}}>
-    <ListButton basePath={basePath} record={data}/>
-    {isAdmin && <DeleteButton basePath={basePath} record={data}/>}
-    <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
-  </CardActions>
-));
+const RequestEditActions = connect(mapStateToProps)(({basePath, data = {}, refresh, isAdmin, dispatch}) => {
+
+  function changeStatus(action) {
+    return (e) => {
+      return sendRequest(CREATE, `requests/${data.id}/${action}`)
+        .then(() => {
+          return refresh(e);
+        })
+        .catch((err) => {
+          console.debug(`Failed to ${action} the request`);
+          console.error(err);
+
+          return dispatch(notify({
+            type: config.notificationTypes.error,
+            text: err && err.message
+          }));
+        });
+    }
+  }
+
+
+  return (
+    <CardActions style={{float: 'right', zIndex: 99}}>
+      <ListButton basePath={basePath} record={data}/>
+      {isAdmin && <DeleteButton basePath={basePath} record={data}/>}
+      <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
+
+      {data.status === config.request.statuses.PENDING &&
+      <FlatButton primary label="Прийняти" onClick={changeStatus('approve')} icon={<NavigationRefresh />}/>
+      }
+
+      {data.status === config.request.statuses.PENDING &&
+      <FlatButton primary label="Відхилити" onClick={changeStatus('reject')} icon={<NavigationRefresh />}/>
+      }
+
+    </CardActions>
+  )
+});
 
 const RequestShowForm = (props) => {
   return (
-    <Edit title='Деталі' {...props} actions={<RequestEditActions/>}>
+    <Edit title='Деталі' {...props} actions={<RequestEditActions/>} resource="requests">
       <SimpleShowLayout>
         <TextField label="ID" source="id"/>
         <TextField label="Тип" source="type"/>
         <TextField label="Email" source="username"/>
         <TextField label="Статус" source="status"/>
-        <ObjectField label="Додатково" source="extra"/>
+        <ObjectField label="Додатково" source="extra" addLabel/>
       </SimpleShowLayout>
     </Edit>);
 };
@@ -95,16 +126,22 @@ const RequestShow = connect(mapShowStateToProps)(RequestShowForm);
 const RequestCreateForm = (props) => {
   const validator = (values) => {
     const errors = {};
-    if (!values.type) {
-      errors.type = 'Зазначте тип';
-    }
+    const requiredFields = ['type', 'username', 'extra'];
+
+    requiredFields.map((field) => {
+      if (!values[field]) {
+        errors[field] = `Значення ${field} є обов'язковим`;
+      }
+
+      return errors;
+    });
 
     return errors;
   };
 
   const sourceConfig = [];
 
-  if (props.location.query.type === config.request.types.REGISTRATION) {
+  if (props.defaultValue.type === config.request.types.REGISTRATION) {
     sourceConfig.push({source: 'firstName', label: "Ім'я"});
     sourceConfig.push({source: 'lastName', label: 'Прізвище'});
   } else /* type === DOWNLOAD_LINK */ {
@@ -141,6 +178,16 @@ const mapCreateStateToProps = (state, props) => {
 };
 const RequestCreate = connect(mapCreateStateToProps)(RequestCreateForm);
 
-export {RequestList, RequestCreate, RequestShow};
+const RequestCreated = (props) => {
+  return (<Edit title='Деталі' {...props} actions={null}>
+    <SimpleShowLayout>
+      <TextField label="ID" source="id"/>
+      <TextField label="Тип" source="type"/>
+      <TextField label="Email" source="username"/>
+      <TextField label="Статус" source="status"/>
+    </SimpleShowLayout>
+  </Edit>);
+};
+export {RequestList, RequestCreate, RequestCreated, RequestShow};
 
 

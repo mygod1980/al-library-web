@@ -205,6 +205,7 @@ const convertRestRequestToHttp = (type, resource, params) => {
  */
 const sendRequest = (type, resource, params = {}) => {
   resource = replaceParams(resource);
+  params.data = params.data || {};
   const {url, options} = convertRestRequestToHttp(type, resource, params);
   let response = {};
   return fetch(url, options)

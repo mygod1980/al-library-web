@@ -13,7 +13,7 @@ import {UserList, UserCreate, UserEdit} from "./components/admin-resources/users
 import {PublicationList, PublicationCreate, PublicationEdit, PublicationShow} from "./components/admin-resources/publications";
 import {AuthorList, AuthorCreate, AuthorEdit, AuthorShow} from "./components/admin-resources/authors";
 import {CategoryList, CategoryCreate, CategoryEdit, CategoryShow} from "./components/admin-resources/categories";
-import {RequestList, RequestCreate, RequestShow} from "./components/admin-resources/requests";
+import {RequestList, RequestCreate, RequestCreated, RequestShow} from "./components/admin-resources/requests";
 import {FileUpload} from './components/admin-resources/file-upload';
 import {Delete} from "admin-on-rest/lib/mui";
 import auth from "./util/auth";
@@ -108,6 +108,7 @@ ReactDOM.render((
                      remove={Delete}/>
           <CrudRoute path="requests"
                      list={RequestList}
+                     edit={RequestCreated}
                      create={RequestCreate}
                      show={RequestShow}
                      remove={Delete}/>
