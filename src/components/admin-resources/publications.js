@@ -4,19 +4,15 @@
 import _ from 'lodash';
 import Cookies from 'js-cookie';
 import React from 'react';
+import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import {CardActions} from 'material-ui/Card';
-
-import {GridList, GridTile} from 'material-ui/GridList';
-import IconButton from 'material-ui/IconButton';
-import ImageEye from 'material-ui/svg-icons/image/remove-red-eye';
-import ContentCreate from 'material-ui/svg-icons/content/create';
 
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
 import CloudDownload from 'material-ui/svg-icons/file/cloud-download';
 import CloudUpload from 'material-ui/svg-icons/file/cloud-upload';
-import {Edit, Filter, Create, SimpleForm, SimpleShowLayout} from 'admin-on-rest/lib/mui';
+import {Edit, EditButton, Filter, Create, SimpleForm, SimpleShowLayout, Datagrid} from 'admin-on-rest/lib/mui';
 import {TextInput, DisabledInput, LongTextInput} from 'admin-on-rest/lib/mui/input';
 import {TextField} from 'admin-on-rest/lib/mui/field';
 import {List} from 'admin-on-rest/lib/mui/list';
@@ -26,7 +22,6 @@ import DeleteButton from '../ui/buttons/delete-button';
 import ListButton from '../ui/buttons/list-button';
 import SubdocumentArrayField from '../ui/fields/subdocument-array-field';
 import ReferenceManyInput from '../ui/inputs/reference-many-input';
-import bookCover from '../../img/book_cover.jpeg';
 import {config} from '../../config';
 const PublicationFilter = (props) => {
   return (
@@ -68,66 +63,43 @@ const PublicationActions = connect(mapStateToProps)(({
   )
 });
 
-const styles = {
-  root: {
-    display: 'flex',
-    justifyContent: 'flex-start'
-  },
-  gridList: {
-    display: 'flex',
-    minHeight: '350px',
-    minWidth: '550px',
-    overflowY: 'auto'
-  },
-  gridTile: {
-    margin: '0 10px 10px 10px',
-    maxWidth: '300px',
-    minHeight: '300px'
-  }
+const RequestAccess = ({record, ...other}) => {
+
+  const {id} = record;
+
+  const onClick = () => {
+    return other.router.replace(`resources/requests/create?type=${config.request.types.DOWNLOAD_LINK}` +
+      `&publicationId=${encodeURIComponent(id)}`);
+  };
+
+  return (<FlatButton onTouchTap={onClick}
+                      label="Отримати"/>);
 };
 
-const PublicationGrid = ({ids, data, basePath, isAdmin}) => {
-  const icon = isAdmin ? <ContentCreate color="white"/> : <ImageEye color="white"/>;
-  return (
-    <div style={styles.root}>
-      <GridList
-        cellHeight={180}
-        style={styles.gridList}
-      >
-        {ids.map((id) => (
-          <GridTile
-            key={id}
-            style={styles.gridTile}
-            title={data[id].title}
-            titleBackground="linear-gradient(to top, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
-            subtitle={<SubdocumentArrayField style={{color: 'rgba(255, 255, 255, 0.9)'}}
-                                             record={data[id]}
-                                             source="authors"
-                                             reference="authors"
-                                             displaySource={['firstName', 'lastName']}/>}
-            actionIcon={<IconButton href={isAdmin ?
-              `#${basePath}/${encodeURIComponent(id)}` :
-              `#${basePath}/${encodeURIComponent(id)}/show`}>{icon}</IconButton>}
-          >
-            { data[id].imageUrl ?
-              <img src={data[id].imageUrl} alt={data[id].title}/> :
-              <img src={bookCover} alt={data[id].title}/> }
-          </GridTile>
-        ))
-        }
-      </GridList>
-    </div>
-  );
-};
-
-const PublicationList = connect(mapStateToProps)((props) => {
+const PublicationList = withRouter(connect(mapStateToProps)((props) => {
   return (<div>
     <List title="Книги" {...props}
           filter={<PublicationFilter/>} actions={<PublicationActions/>}>
-      <PublicationGrid isAdmin={props.isAdmin}/>
+      <Datagrid selectable={false}>
+        <TextField label="Назва" source="title"/>
+        <TextField label="Анотація" source="description"/>
+        <SubdocumentArrayField label="Автори"
+                               source="authors"
+                               reference="authors"
+                               displaySource={['firstName', 'lastName']}/>
+        <SubdocumentArrayField label="Категорії"
+                               source="categories"
+                               reference="categories"
+                               displaySource="name"/>
+        <TextField label="Дата публікації" source="publishedAt"/>
+        <DateField label="Створений" source="createdAt"/>
+        {props.isAdmin ? <DateField label="Оновлений" source="updatedAt"/> : <span/>}
+        {!props.user ? <RequestAccess label="Отримати" {...props}/> : <span/>}
+        {props.isAdmin ? <EditButton label="Редагування"/> : <span/>}
+      </Datagrid>
     </List>
   </div>)
-});
+}));
 
 const PublicationEditActions = connect(mapStateToProps)(({basePath, data = {}, refresh, user, isAdmin}) => {
   const accessToken = Cookies.get('access_token');

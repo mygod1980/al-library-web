@@ -28,7 +28,7 @@ const RequestFilter = (props) => {
       <TextInput label="Розмір сторінки" type="number" source="perPage" alwaysOn name="perPage"/>
       <TextInput label="Пошук" source="q" alwaysOn name="q"/>
     </Filter>
-  )
+  );
 };
 
 const mapStateToProps = (state) => {
@@ -38,8 +38,6 @@ const mapStateToProps = (state) => {
 
 const RequestActions = connect(mapStateToProps)(({resource, filter, displayedFilters, filterValues, basePath, showFilter, refresh, isAdmin}) => (
   <CardActions style={{float: 'right', zIndex: 99999}}>
-    {filter && React.cloneElement(filter, {resource, showFilter, displayedFilters, filterValues, context: 'button'}) }
-    <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
   </CardActions>
 ));
 
@@ -140,8 +138,9 @@ const RequestCreateForm = (props) => {
   };
 
   const sourceConfig = [];
+  const isRegistration = props.defaultValue.type === config.request.types.REGISTRATION;
 
-  if (props.defaultValue.type === config.request.types.REGISTRATION) {
+  if (isRegistration) {
     sourceConfig.push({source: 'firstName', label: "Ім'я"});
     sourceConfig.push({source: 'lastName', label: 'Прізвище'});
   } else /* type === DOWNLOAD_LINK */ {
@@ -149,37 +148,41 @@ const RequestCreateForm = (props) => {
   }
 
   return (
-    <Create {...props}>
+    <Create {...props} hasList={props.isAdmin}>
       <SimpleForm defaultValue={props.defaultValue} validation={validator}>
         <TextInput label="Тип" source="type" elStyle={{display: 'none'}}/>
-        <TextInput label="Email" source="username"/>
-        <ObjectInput addField label="Додатково" source="extra" sourceConfig={sourceConfig}/>
+        <TextInput label="Вкажіть Ваш email" source="username"/>
+        {isRegistration ? <ObjectInput addField label="Додатково" source="extra" sourceConfig={sourceConfig}/> :
+          <span/>}
       </SimpleForm>
     </Create>);
 };
 
 const mapCreateStateToProps = (state, props) => {
-  if (!props.location.type) {
+  if (!props.location.query.type) {
     console.warn('No type in query');
   }
 
+  const isAdmin = state.wrapper.user.role === config.roles.ADMIN;
   const type = props.location.query.type || config.request.types.REGISTRATION;
 
   let title = 'Запит на ';
-  const publication = props.location.query.publication;
+  const publicationId = props.location.query.publicationId;
+  const extra = {};
 
   if (type === config.request.types.REGISTRATION) {
     title += 'реєстрацію';
   } else /* if type === DOWNLOAD_LINK */ {
     title += 'доступ до книги';
+    extra.publicationId = publicationId;
   }
 
-  return {title, publication, defaultValue: {type}};
+  return {title, publicationId, defaultValue: {type, extra}, isAdmin};
 };
 const RequestCreate = connect(mapCreateStateToProps)(RequestCreateForm);
 
 const RequestCreated = (props) => {
-  return (<Edit title='Деталі' {...props} actions={null}>
+  return (<Edit title='Деталі' {...props} actions={null} hasList={false}>
     <SimpleShowLayout>
       <TextField label="ID" source="id"/>
       <TextField label="Тип" source="type"/>
