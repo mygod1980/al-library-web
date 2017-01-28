@@ -82,15 +82,14 @@ const RequestEditActions = connect(mapStateToProps)(({basePath, data = {}, refre
 
   return (
     <CardActions style={{float: 'right', zIndex: 99}}>
-      <ListButton basePath={basePath} record={data}/>
+      {isAdmin && <ListButton basePath={basePath} record={data}/>}
       {isAdmin && <DeleteButton basePath={basePath} record={data}/>}
       <FlatButton primary label="Оновити" onClick={refresh} icon={<NavigationRefresh />}/>
-
-      {data.status === config.request.statuses.PENDING &&
+      {data.status === config.request.statuses.PENDING && isAdmin &&
       <FlatButton primary label="Прийняти" onClick={changeStatus('approve')} icon={<NavigationRefresh />}/>
       }
 
-      {data.status === config.request.statuses.PENDING &&
+      {data.status === config.request.statuses.PENDING && isAdmin &&
       <FlatButton primary label="Відхилити" onClick={changeStatus('reject')} icon={<NavigationRefresh />}/>
       }
 
@@ -182,7 +181,7 @@ const mapCreateStateToProps = (state, props) => {
 const RequestCreate = connect(mapCreateStateToProps)(RequestCreateForm);
 
 const RequestCreated = (props) => {
-  return (<Edit title='Деталі' {...props} actions={null} hasList={false}>
+  return (<Edit title='Деталі' {...props} actions={null}>
     <SimpleShowLayout>
       <TextField label="ID" source="id"/>
       <TextField label="Тип" source="type"/>
