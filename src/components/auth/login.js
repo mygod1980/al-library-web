@@ -41,6 +41,12 @@ class Login extends React.Component {
 
     return auth.login(email, password)
       .then(() => {
+        const {redirectTo} = this.props.location.query;
+
+        if (redirectTo) {
+          return location.replace(redirectTo);
+        }
+
         return this.props.router.replace('resources/publications');
       })
       .catch((err) => {

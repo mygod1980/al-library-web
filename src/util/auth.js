@@ -37,12 +37,18 @@ export default {
 
   resetSession() {
     Cookies.remove('access_token');
-    Cookies.remove('refresh_token');
+    return Cookies.remove('refresh_token');
   },
 
   renewToken() {
     console.info('Trying to renew access token..');
     const refresh_token = Cookies.get('refresh_token');
+
+    if (!refresh_token) {
+      const redirectTo = encodeURIComponent(location.href);
+
+      return Promise.resolve(window.location.replace(`#/login?redirectTo=${redirectTo}`));
+    }
 
     const options = {
       data: Object.assign({'grant_type': 'refresh_token', 'refresh_token': refresh_token}, clientAuth)
