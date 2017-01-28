@@ -12,7 +12,9 @@ import People from 'material-ui/svg-icons/social/people';
 import Person from 'material-ui/svg-icons/social/person';
 import CloudUpload from 'material-ui/svg-icons/file/cloud-upload';
 import Label from 'material-ui/svg-icons/action/label';
-import FolderOPen from 'material-ui/svg-icons/file/folder-open';
+import Alarm from 'material-ui/svg-icons/action/alarm';
+import VerifiedUser from 'material-ui/svg-icons/action/verified-user';
+import FolderOpen from 'material-ui/svg-icons/file/folder-open';
 import UserDropDown from './header/user-dropdown';
 import Menu from 'admin-on-rest/lib/mui/layout/Menu';
 import {lightBlue50} from 'material-ui/styles/colors';
@@ -23,19 +25,27 @@ import theme from './theme/dark-theme';
 class Layout extends React.Component {
   render() {
     const isLogin = this.props.location.pathname === '/login' || this.props.location.pathname === '/';
-    const dropDown = isLogin ? <span/> : <UserDropDown router={this.props.router}/>;
+    const dropDown = isLogin || !this.props.user ? <span/> : <UserDropDown router={this.props.router}/>;
     const title = this.props.children.props.route.title;
     const rightElement = this.props.isLoading ? <CircularProgress color={lightBlue50} size={0.7}/> : dropDown;
-    const resources = [
-      {name: 'resources/publications', icon: FolderOPen, options: {label: 'Книги'}, list: true},
-      {name: 'resources/authors', icon: Person, options: {label: 'Автори'}, list: true},
-      {name: 'resources/categories', icon: Label, options: {label: 'Категорії'}, list: true}
-    ];
+    let resources = [];
+
+    if (this.props.user) {
+      resources = [
+        {name: 'resources/publications', icon: FolderOpen, options: {label: 'Книги'}, list: true},
+        {name: 'resources/authors', icon: Person, options: {label: 'Автори'}, list: true},
+        {name: 'resources/categories', icon: Label, options: {label: 'Категорії'}, list: true}
+      ];
+    } else {
+      resources = [
+        {name: 'publications', icon: FolderOpen, options: {label: 'Книги'}, list: true},
+        {name: 'login', icon: VerifiedUser, options: {label: 'Авторизуватись'}, list: true}
+      ]
+    }
 
     if (this.props.isAdmin) {
       resources.push({name: 'resources/users', icon: People, options: {label: 'Користувачі'}, list: true});
-      /* TODO: set new icon */
-      resources.push({name: 'resources/requests', icon: People, options: {label: 'Запити'}, list: true});
+      resources.push({name: 'resources/requests', icon: Alarm, options: {label: 'Запити'}, list: true});
       resources.push({name: 'resources/upload', icon: CloudUpload, options: {label: 'Додати файл книги'}, list: true});
     }
 
@@ -63,6 +73,7 @@ class Layout extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
+    user: state.wrapper.user,
     isLoading: state.admin.loading > 0 || state.wrapper.isLoading,
     isAdmin: state.wrapper.user && state.wrapper.user.role === config.roles.ADMIN
   };

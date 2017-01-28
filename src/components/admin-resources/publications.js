@@ -68,7 +68,7 @@ const RequestAccess = ({record, ...other}) => {
   const {id} = record;
 
   const onClick = () => {
-    return other.router.replace(`resources/requests/create?type=${config.request.types.DOWNLOAD_LINK}` +
+    return other.router.replace(`requests/create?type=${config.request.types.DOWNLOAD_LINK}` +
       `&publicationId=${encodeURIComponent(id)}`);
   };
 
@@ -79,6 +79,7 @@ const RequestAccess = ({record, ...other}) => {
 const PublicationList = withRouter(connect(mapStateToProps)((props) => {
   return (<div>
     <List title="Книги" {...props}
+          resource={props.resource || 'publications'}
           filter={<PublicationFilter/>} actions={<PublicationActions/>}>
       <Datagrid selectable={false}>
         <TextField label="Назва" source="title"/>
@@ -92,7 +93,7 @@ const PublicationList = withRouter(connect(mapStateToProps)((props) => {
                                reference="categories"
                                displaySource="name"/>
         <TextField label="Дата публікації" source="publishedAt"/>
-        <DateField label="Створений" source="createdAt"/>
+        <DateField label="Створена" source="createdAt"/>
         {props.isAdmin ? <DateField label="Оновлений" source="updatedAt"/> : <span/>}
         {!props.user ? <RequestAccess label="Отримати" {...props}/> : <span/>}
         {props.isAdmin ? <EditButton label="Редагування"/> : <span/>}

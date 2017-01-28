@@ -111,7 +111,7 @@ const RequestShowForm = (props) => {
 };
 
 const mapShowStateToProps = (state) => {
-  const isAdmin = state.wrapper.user.role === config.roles.ADMIN;
+  const isAdmin = state.wrapper.user && state.wrapper.user.role === config.roles.ADMIN;
 
   return {
     hasDelete: isAdmin
@@ -162,7 +162,8 @@ const mapCreateStateToProps = (state, props) => {
     console.warn('No type in query');
   }
 
-  const isAdmin = state.wrapper.user.role === config.roles.ADMIN;
+  const isAdmin = state.wrapper.user && state.wrapper.user.role === config.roles.ADMIN;
+
   const type = props.location.query.type || config.request.types.REGISTRATION;
 
   let title = 'Запит на ';
@@ -181,7 +182,7 @@ const mapCreateStateToProps = (state, props) => {
 const RequestCreate = connect(mapCreateStateToProps)(RequestCreateForm);
 
 const RequestCreated = (props) => {
-  return (<Edit title='Деталі' {...props} actions={null}>
+  return (<Edit title='Деталі за запитом' {...props} actions={null}>
     <SimpleShowLayout>
       <TextField label="ID" source="id"/>
       <TextField label="Тип" source="type"/>

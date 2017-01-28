@@ -79,7 +79,8 @@ ReactDOM.render((
   <Provider store={store}>
     <Router history={history}>
       <Route path="/" component={Layout}>
-        <IndexRoute component={Login} title={config.appTitle} onEnter={checkAuth}/>
+        <IndexRoute component={PublicationList} title={config.appTitle}/>
+        <Route path="publications" component={PublicationList} title={config.appTitle}/>
         <Route path="login" title={config.appTitle} component={Login}/>
         <Route path="logout" title={config.appTitle} component={Logout} onEnter={logout}/>
         <Route path="resources" onEnter={checkAuth}>
@@ -112,10 +113,14 @@ ReactDOM.render((
                      create={RequestCreate}
                      show={RequestShow}
                      remove={Delete}/>
-
           <Route path="publications/:id/upload" component={FileUpload}/>
           <Route path="upload" component={FileUpload}/>
         </Route>
+        <CrudRoute path="requests"
+                   edit={RequestCreated}
+                   create={RequestCreate}
+                   show={RequestShow}
+                   remove={Delete}/>
       </Route>
     </Router>
   </Provider>
