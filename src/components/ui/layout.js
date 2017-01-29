@@ -12,7 +12,8 @@ import People from 'material-ui/svg-icons/social/people';
 import Person from 'material-ui/svg-icons/social/person';
 import CloudUpload from 'material-ui/svg-icons/file/cloud-upload';
 import Label from 'material-ui/svg-icons/action/label';
-import Alarm from 'material-ui/svg-icons/action/alarm';
+import Bookmark from 'material-ui/svg-icons/action/bookmark';
+import Add from 'material-ui/svg-icons/content/add';
 import VerifiedUser from 'material-ui/svg-icons/action/verified-user';
 import FolderOpen from 'material-ui/svg-icons/file/folder-open';
 import UserDropDown from './header/user-dropdown';
@@ -39,13 +40,19 @@ class Layout extends React.Component {
     } else {
       resources = [
         {name: 'publications', icon: FolderOpen, options: {label: 'Книги'}, list: true},
-        {name: 'login', icon: VerifiedUser, options: {label: 'Авторизуватись'}, list: true}
+        {name: 'login', icon: VerifiedUser, options: {label: 'Авторизуватись'}, list: true},
+        {
+          name: `requests/create?type=${encodeURIComponent(config.request.types.REGISTRATION)}`,
+          icon: Add,
+          options: {label: 'Зареєструватись'},
+          list: true
+        }
       ]
     }
 
     if (this.props.isAdmin) {
       resources.push({name: 'resources/users', icon: People, options: {label: 'Користувачі'}, list: true});
-      resources.push({name: 'resources/requests', icon: Alarm, options: {label: 'Запити'}, list: true});
+      resources.push({name: 'resources/requests', icon: Bookmark, options: {label: 'Запити'}, list: true});
       resources.push({name: 'resources/upload', icon: CloudUpload, options: {label: 'Додати файл книги'}, list: true});
     }
 
