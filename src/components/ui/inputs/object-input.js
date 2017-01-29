@@ -16,7 +16,7 @@ class ObjectInput extends React.Component {
   }
 
   static PropTypes = {
-    /* {source: '', label: ''} */
+    /* looks like {source: '', label: ''} */
     sourceConfig: PropTypes.arrayOf(PropTypes.object).isRequired
   };
 
