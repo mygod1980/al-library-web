@@ -20,7 +20,7 @@ export const config = {
     info: 'info',
     warning: 'warning'
   },
-  backendUrl: /*process.env.REACT_APP_BACKEND_URL || */'http://localhost:1340',
+  backendUrl: process.env.REACT_APP_BACKEND_URL || 'http://localhost:1340',
   backendBasePath: 'api',
   auth: {
     path: 'oauth',
