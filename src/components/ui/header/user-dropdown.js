@@ -8,7 +8,7 @@ import MenuItem from "material-ui/MenuItem";
 import IconButton from "material-ui/IconButton/IconButton";
 import ExpandMoreIcon from "material-ui/svg-icons/navigation/expand-more";
 import {lightBlue50} from "material-ui/styles/colors";
-
+import {config} from '../../../config';
 const colorStyle = {color: lightBlue50};
 class UserDropDown extends React.Component {
 
@@ -30,9 +30,10 @@ class UserDropDown extends React.Component {
       targetOrigin={{horizontal: 'left', vertical: 'top'}}
     >
 
-      <MenuItem onClick={moveToOwnProfile}>
+      {this.props.isAdmin && <MenuItem onClick={moveToOwnProfile}>
         Мій профіль
-      </MenuItem>
+      </MenuItem>}
+
 
       <MenuItem onClick={moveToLogin}>
         Вийти
@@ -44,7 +45,8 @@ class UserDropDown extends React.Component {
 
 
 const mapStateToProps = (state) => ({
-  user: state.wrapper.user
+  user: state.wrapper.user,
+  isAdmin: state.wrapper.user.role === config.roles.ADMIN
 });
 
 

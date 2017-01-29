@@ -117,7 +117,7 @@ const convertRestRequestToHttp = (type, resource, params) => {
         const arrayFields = ['authors', 'categories'];
         _.map(arrayFields, (fieldName) => {
           if (params.filter[fieldName]) {
-            if(params.filter[fieldName].length > 0) {
+            if (params.filter[fieldName].length > 0) {
               params.filter[fieldName] = {$in: params.filter[fieldName]};
             } else {
               delete params.filter[fieldName];
@@ -164,6 +164,14 @@ const convertRestRequestToHttp = (type, resource, params) => {
     case CREATE:
       url = `${apiUrl}/${resource}`;
       options.method = 'POST';
+
+      if (resource.includes('requests')) {
+        params.data = Object.assign(params.data, {
+          client_id: config.auth.clientId,
+          client_secret: config.auth.clientSecret
+        });
+      }
+
       if (params.isForm) {
         options.body = params.data;
       } else {
@@ -197,6 +205,7 @@ const convertRestRequestToHttp = (type, resource, params) => {
  */
 const sendRequest = (type, resource, params = {}) => {
   resource = replaceParams(resource);
+  params.data = params.data || {};
   const {url, options} = convertRestRequestToHttp(type, resource, params);
   let response = {};
   return fetch(url, options)
