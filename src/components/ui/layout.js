@@ -25,9 +25,9 @@ import theme from './theme/dark-theme';
 
 class Layout extends React.Component {
   render() {
-    const isLogin = this.props.location.pathname === '/login' || this.props.location.pathname === '/';
+    const isLogin = this.props.location.pathname === '/login';
     const dropDown = isLogin || !this.props.user ? <span/> : <UserDropDown router={this.props.router}/>;
-    const title = this.props.children.props.route.title;
+    const title = config.appTitle;
     const rightElement = this.props.isLoading ? <CircularProgress color={lightBlue50} size={0.7}/> : dropDown;
     let resources = [];
 
@@ -88,8 +88,7 @@ const mapStateToProps = (state) => {
 
 Layout.propTypes = {
   isLoading: PropTypes.bool.isRequired,
-  children: PropTypes.node,
-  route: PropTypes.object.isRequired
+  children: PropTypes.node
 };
 
 export default connect(

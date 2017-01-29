@@ -10,7 +10,12 @@ import {reducer as formReducer} from "redux-form";
 import restClient from "./util/rest-client";
 import Layout from "./components/ui/layout";
 import {UserList, UserCreate, UserEdit} from "./components/admin-resources/users";
-import {PublicationList, PublicationCreate, PublicationEdit, PublicationShow} from "./components/admin-resources/publications";
+import {
+  PublicationList,
+  PublicationCreate,
+  PublicationEdit,
+  PublicationShow
+} from "./components/admin-resources/publications";
 import {AuthorList, AuthorCreate, AuthorEdit, AuthorShow} from "./components/admin-resources/authors";
 import {CategoryList, CategoryCreate, CategoryEdit, CategoryShow} from "./components/admin-resources/categories";
 import {RequestList, RequestCreate, RequestCreated, RequestShow} from "./components/admin-resources/requests";
@@ -79,10 +84,10 @@ ReactDOM.render((
   <Provider store={store}>
     <Router history={history}>
       <Route path="/" component={Layout}>
-        <IndexRoute component={PublicationList} title={config.appTitle}/>
-        <Route path="publications" component={PublicationList} title={config.appTitle}/>
-        <Route path="login" title={config.appTitle} component={Login}/>
-        <Route path="logout" title={config.appTitle} component={Logout} onEnter={logout}/>
+        <IndexRoute component={PublicationList}/>
+        <Route path="publications" component={PublicationList}/>
+        <Route path="login" component={Login}/>
+        <Route path="logout" component={Logout} onEnter={logout}/>
         <Route path="resources" onEnter={checkAuth}>
           <CrudRoute path="publications"
                      list={PublicationList}
