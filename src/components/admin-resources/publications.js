@@ -87,10 +87,12 @@ const PublicationList = withRouter(connect(mapStateToProps)((props) => {
         <SubdocumentArrayField label="Автори"
                                source="authors"
                                reference="authors"
+                               link={props.isAdmin}
                                displaySource={['firstName', 'lastName']}/>
         <SubdocumentArrayField label="Категорії"
                                source="categories"
                                reference="categories"
+                               link={props.isAdmin}
                                displaySource="name"/>
         <TextField label="Дата публікації" source="publishedAt"/>
         <DateField label="Створена" source="createdAt"/>

@@ -7,11 +7,12 @@ export default class SubdocumentArrayField extends React.Component {
   static propTypes = {
     source: PropTypes.string.isRequired,
     reference: PropTypes.string.isRequired,
+    link: PropTypes.bool,
     displaySource: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]).isRequired
   };
 
   render() {
-    const {record, source, displaySource, reference, style = {}} = this.props;
+    const {record, source, displaySource, reference, style = {}, link} = this.props;
 
     return (
 
@@ -31,9 +32,14 @@ export default class SubdocumentArrayField extends React.Component {
         label = label.trim();
         return (
           <p key={item._id}>
-            <a style={style} href={`#/resources/${reference}/${item._id}/show`}>
-              {isLast ? label : `${label}, `}
-            </a>
+            {
+              link ?
+                <a style={style} href={`#/resources/${reference}/${item._id}/show`}>
+                  {isLast ? label : `${label}, `}
+                </a> :
+                <span>{isLast ? label : `${label}, `}</span>
+            }
+
           </p>);
       })}
       </div>);
