@@ -1,0 +1,11 @@
+{
+  "apps": [
+    {
+      "name": "al-library-admin",
+      "script": "server/index.js",
+      "log_date_format": "YYYY-MM-DD HH:mm Z",
+      "env": {
+      }
+    }
+  ]
+}
