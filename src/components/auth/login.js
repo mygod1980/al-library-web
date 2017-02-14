@@ -3,6 +3,7 @@
  * Created by eugenia on 20.09.16.
  */
 import React, {PropTypes} from 'react';
+import Cookies from 'js-cookie';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import TextField from 'material-ui/TextField';
@@ -38,6 +39,10 @@ class Login extends React.Component {
     }
 
     this.props.dispatch(setLoadingState());
+
+    // removing old tokens
+    Cookies.remove('access_token');
+    Cookies.remove('refresh_token');
 
     return auth.login(email, password)
       .then(() => {
