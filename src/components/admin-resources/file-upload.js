@@ -123,7 +123,7 @@ class FileUploadForm extends React.Component {
 
     this.setState({isLoading: true});
     return sendRequest(CREATE,
-      `publications/${this.state.publication.id}/upload?type=${encodeURIComponent(this.props.file.type)}`, params)
+      `publications/${this.state.publication.id}/file?type=${encodeURIComponent(this.props.file.type)}`, params)
       .then((res) => {
         console.debug(res);
         this.setState({isLoading: false});
