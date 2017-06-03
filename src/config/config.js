@@ -11,8 +11,8 @@ export const config = {
     },
     password: {
       required: "Пароль обов'язковий!",
-      invalid: 'Пароль неправильний!'
-    }
+      invalid: 'Пароль неправильний!',
+    },
   },
   notificationTypes: {
     error: 'error',
